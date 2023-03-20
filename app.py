@@ -102,4 +102,4 @@ def stream_data():
     return Response(stream_with_context(generate_data()), mimetype='text/event-stream')
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=9018, debug=True)
+    app.run(host='0.0.0.0', port=9019, debug=True)
