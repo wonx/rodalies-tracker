@@ -33,7 +33,7 @@
   width: calc(1vw);
   border-radius: 50%;
   background-color: white;
-  border: 3px solid darkorange;
+  border: 0.2vw solid darkorange; 
   position: relative;
   display: flex;
   align-items: center;
