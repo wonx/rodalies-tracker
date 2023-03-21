@@ -29,6 +29,8 @@ area_r7_tornada = (620, 140, 1600, 800)
 area_r8_anada = (468, 10, 1300, 950)
 area_r8_tornada = (1625, 10, 2300, 950)
 
+print("Getting train schedules...")
+
 # R1 (L'Hospitalet - Maçanet)
 url = "https://rodalies.gencat.cat/web/.content/02_Horaris/horaris/R1.pdf"
 schedule = tabula.read_pdf(url, pages=1, stream=True, lattice=False, multiple_tables=True, area=area_r1_anada_feiners)
@@ -112,7 +114,7 @@ schedule[0] = schedule[0].iloc[:, : len(estacions_r4)]
 schedule[0].columns = estacions_r4
 r4_tornada_feiners = helpers.cleanup_trainschedule(schedule[0])
 
-
+print("...done")
 
 tz = pytz.timezone('Europe/Madrid') # zona horària de Madrid 
 #bcn_time = datetime.now(tz).strftime("%H:%M:%S") # hora de Barcelona en format hh:mm

@@ -33,7 +33,7 @@
   width: calc(1vw);
   border-radius: 50%;
   background-color: white;
-  border: 2px solid darkorange;
+  border: 3px solid darkorange;
   position: relative;
   display: flex;
   align-items: center;
@@ -59,11 +59,11 @@
 
 .train-marker {
   position: absolute;
-  width: calc(1vw);
-  height: calc(1vw);
+  width: 0.75vw;
+  height: 0.75vw;
   background-color: #f00;
   border: 1px solid #222222;
   border-radius: 50%;
   top: 50%;
-  transform: translate(2.5px, -50%); /* the first value (2.5px should be the difference between the width of the .circle and the width of the .train-marker */
+  transform: translate(8%, -50%); /* the first value (2.5px should be the difference between the width of the .circle and the width of the .train-marker */
 }
