@@ -6,10 +6,13 @@ import pandas as pd
 def cleanup_trainschedule(df):
     df = df.astype(str)
     df = df.replace('\.', ':', regex=True)
-    for col in df.columns: 
-        df[col] = df[col].str.replace(r'(:\d)$', r'\g<1>0', regex=True) 
     df = df.replace('–', np.NaN)
-    df = df.replace('nan', np.NaN)
+    df = df.astype(str)
+    for col in df.columns: # remove unwanted characters
+        df[col] = df[col].str.replace('[^0-9:]', '', regex=True) # Removes non numeric characters or :
+        df[col] = df[col].str.replace(r'(:\d)$', r'\g<1>0', regex=True) # Adds missing 0 at the end of a time
+    df = df.replace('', np.NaN)
+    #df = df.replace('nan', np.NaN)
     return df
 
 # Definim una funció que converteix una hora en minuts
