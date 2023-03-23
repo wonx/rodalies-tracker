@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Rodalies de Catalunya</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+  </head>
+  <body style="width:100%; height:100%; margin:0; padding:0; overflow:hidden">
+    <object data="{{ url_for('static', filename='Rodalies_barcelona_2013_.svg') }}" type="image/svg+xml" id="SVG" style="width:100%;height:100%;"></object>
+    <script src="{{ url_for('static', filename='js/scriptmap.js') }}"></script>
+  </body>
+</html>

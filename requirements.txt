@@ -1,0 +1,3 @@
+tabula-py==2.5.1
+tabula-py==2.5.1
+#sudo apt install openjdk-8-jre-headless

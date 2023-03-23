@@ -67,3 +67,4 @@
   top: 50%;
   transform: translate(8%, -50%); /* the first value (2.5px should be the difference between the width of the .circle and the width of the .train-marker */
 }
+
