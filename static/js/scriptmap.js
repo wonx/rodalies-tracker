@@ -4,13 +4,14 @@ var svgDoc;
 mySVG.addEventListener("load", function() {
     svgDoc = mySVG.contentDocument;
     
-    var stationPositions = [0, 0.0935, 0.1335, 0.16, 0.2345, 0.256, 0.278, 0.2985, 0.3445, 0.3593, 0.3845, 0.4000, 0.4475, 0.4782, 0.541, 0.5685, 0.597, 0.623, 0.6505, 0.6985, 0.7165, 0.731, 0.7543, 0.7727, 0.791, 0.809, 0.8355, 0.872, 0.8903, 0.9085, 0.9268, 0.9451, 0.9815, 1];
-    //addStations(svgDoc, stationPositions);
+    var stationPositions = [0, 0.0935, 0.1335, 0.16, 0.2345, 0.256, 0.278, 0.2985, 0.3445, 0.3593, 0.3845, 0.4000, 0.4475, 0.4782, 0.539, 0.5621, 0.585, 0.608, 0.630, 0.653, 0.6985, 0.7165, 0.731, 0.7543, 0.7727, 0.791, 0.809, 0.8355, 0.872, 0.8903, 0.9085, 0.9268, 0.9451, 0.9815, 1];
+    addStations(svgDoc, stationPositions);
 
     // Example usage: add a marker at station 2.5 (between station 2 and 3)
     //setTrainMarkers(svgDoc, 3.15, stationPositions, "green");
 });
 
+// Places two sets of positions on the train map. The positions of the stations need to be passed too, as well as the colors of the markers.
 function setTrainMarkers(svgDoc, trainPositions1, trainPositions2, stationPositions, color1, color2) {
   var path = svgDoc.getElementById("path9823_joined");
   var pathLength = path.getTotalLength();
@@ -73,7 +74,7 @@ eventSource.onmessage = function(event) {
   const data = JSON.parse(event.data);
   console.log(data);
   console.log(svgDoc)
-  var r3stationPositions = [0, 0.0935, 0.1335, 0.16, 0.2345, 0.256, 0.278, 0.2985, 0.3445, 0.3593, 0.3845, 0.4000, 0.4475, 0.4782, 0.541, 0.5685, 0.597, 0.623, 0.6505, 0.6985, 0.7165, 0.731, 0.7543, 0.7727, 0.791, 0.809, 0.8355, 0.872, 0.8903, 0.9085, 0.9268, 0.9451, 0.9815, 1];
+  var r3stationPositions = [0, 0.0935, 0.1335, 0.16, 0.2345, 0.256, 0.278, 0.2985, 0.3445, 0.3593, 0.3845, 0.4000, 0.4475, 0.4782, 0.539, 0.5621, 0.585, 0.608, 0.630, 0.653, 0.6985, 0.7165, 0.731, 0.7543, 0.7727, 0.791, 0.809, 0.8355, 0.872, 0.8903, 0.9085, 0.9268, 0.9451, 0.9815, 1];
   //data.forEach(line => {
   //  setTrainMarkers(svgDoc, line.positions1[0], r3stationPositions, "green");
   //});
