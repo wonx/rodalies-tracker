@@ -124,10 +124,10 @@ eventSource.onmessage = function(event) {
   console.log(data[3]) //data[2] es la linia R3
   color1 = "yellow"
   color2 = "orange"
-  setTrainMarkers(svgDoc, "path9823_joined", data[2].positions1, data[2].positions2, r3stationPositions, color1, color2);
-  setTrainMarkers(svgDoc, "path9534", data[3].positions1, data[3].positions2, r4stationPositions, color1, color2);
-  setTrainMarkers(svgDoc, "path9845-4", data[4].positions1, data[4].positions2, r7stationPositions, color1, color2);
-  setTrainMarkers(svgDoc, "path9845", data[5].positions1, data[5].positions2, r8stationPositions, color1, color2);
+  setTrainMarkers(svgDoc, "path9823_joined", data[2].positions1, data[2].positions2, r3stationPositions, color1, color2); //R3
+  setTrainMarkers(svgDoc, "path9534", data[3].positions1, data[3].positions2, r4stationPositions, color1, color2); //R4
+  setTrainMarkers(svgDoc, "path9845-4", data[6].positions1, data[4].positions2, r7stationPositions, color1, color2); //R7
+  setTrainMarkers(svgDoc, "path9845", data[7].positions1, data[5].positions2, r8stationPositions, color1, color2); //R8
 
 };
 
