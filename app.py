@@ -10,7 +10,7 @@ import json
 import numpy as np
 
 estacions_r1=("L'Hospitalet de Llobregat", "Barcelona - Sants", "Barcelona - Plaça de Catalunya", "Barcelona - Arc de Triomf", "Barcelona - El Clot Aragó", "St. Adrià de Besòs", "Badalona", "Montgat", "Montgat Nord", "El Masnou", "Ocata", "Premià de Mar", "Vilassar de Mar", "Cabrera de Mar-Vilassar de Mar", "Mataró", "St. Andreu de Llavaneres", "Caldes d'Estrac", "Arenys de Mar", "Canet de Mar", "St. Pol de Mar","Calella","Pineda de Mar","Santa Susanna","Malgrat de Mar","Blanes","Tordera","Maçanet-Massanes")
-estacions_r2=("Maçanet-Massanes", "Hostalric", "Riells i Viabrea-Breda", "Gualba", "Sant Celoni", "Palautordera", "Llinars del Vallès", "Cardedeu", "Les Franqueses del Vallès-Granollers Nord", "Granollers Centre", "Montmeló", "Mollet-Sant Fost", "La Llagosta", "Montcada i Reixac", "Barcelona - Sant Andreu", "Barcelona-El Clot-Aragó", "Barcelona - Estació de França", "Barcelona-Passeig de Gràcia ", "Barcelona-Sants", "Bellvitge", "El Prat de Llobregat", "Aeroport", "Viladecans", "Gavà", "Castelldefels", "Platja de Castelldefels", "Garraf", "Sitges", "Vilanova i la Geltrú", "Cubelles", "Cunit", "Segur de Calafell", "Calafell", "Sant Vicenç de Calders")
+estacions_r2=("Maçanet-Massanes", "Hostalric", "Riells i Viabrea-Breda", "Gualba", "Sant Celoni", "Palautordera", "Llinars del Vallès", "Cardedeu", "Les Franqueses del Vallès-Granollers Nord", "Granollers Centre", "Montmeló", "Mollet-Sant Fost", "La Llagosta", "Montcada i Reixac", "Barcelona - Sant Andreu", "Barcelona-El Clot-Aragó", "Barcelona - Estació de França", "Barcelona-Passeig de Gràcia", "Barcelona-Sants", "Bellvitge", "El Prat de Llobregat", "Aeroport", "Viladecans", "Gavà", "Castelldefels", "Platja de Castelldefels", "Garraf", "Sitges", "Vilanova i la Geltrú", "Cubelles", "Cunit", "Segur de Calafell", "Calafell", "Sant Vicenç de Calders")
 estacions_r3=("L'Hospitalet de Llobregat", "Barcelona-Sants", "Barcelona-Plaça Catalunya", "Barcelona-Arc de Triomf", "Barcelona-La Sagrera-Meridiana", "Sant Andreu Arenal", "Torre del Baró-Vallbona", "Montcada Bifurcació", "Montcada Ripollet", "Santa Perpètua de Mogoda-La Florida", "Mollet-Santa Rosa", "Parets del Vallès", "Granollers-Canovelles", "Les Franqueses del Vallès", "La Garriga", "Figaró", "Sant Martí de Centelles", "Centelles", "Balenyà-Els Hostalets", "Balenyà-Tona-Seva", "Vic", "Manlleu", "Torelló", "Borgonyà", "Sant Quirze de Besora", "La Farga de Bebié", "Ripoll", "Campdevànol", "Ribes de Freser", "Planoles", "Toses", "La Molina", "Urtx-Alp", "Puigcerdà","Latour-de-Carol-Enveig")
 estacions_r4=("St. Vicenç de Calders", "El Vendrell", "L'Arboç", "Els Monjos", "Vilafranca del Penedès", "La Granada", "Lavern-Subirats", "St. Sadurní d'Anoia", "Gelida", "Martorell", "Castellbisbal", "El Papiol","Molins de Rei","St. Feliu de Llobregat","St. Joan Despí","Cornellà","L'Hospitalet de Llobregat","Barcelona Sants","Barcelona Plaça de Catalunya","Barcelona Arc de Triomf","Barcelona La Sagrera-Meridiana","Barcelona St.Andreu Arenal","Barcelona Torre del Baró","Montcada Bifurcació","Montcada i Reixac-Manresa","Montcada i Reixac-Sta. Maria","Cerdanyola del Vallès","Barberà del Vallès","Sabadell Sud","Sabadell Centre","Sabadell Nord","Terrassa Est" ,"Terrassa" ,"St. Miquel de Gonteres" ,"Viladecavalls" ,"Vacarisses-Torreblanca" ,"Vacarisses" ,"Castellbell i el Vilar-Monistrol de Montserrat" ,"St. Vicenç de Castellet" ,"Manresa")
 estacions_r5 = ["Plaça Espanya", "Magòria-La Campana", "Ildefons Cerdà", "Europa | Fira", "Gornal", "Sant Josep", "L’Hospitalet-Av. Carrilet", "Almeda", "Cornellà Riera", "Sant Boi", "Molí Nou-Ciutat Cooperativa", "Colònia Güell", "Santa Coloma de Cervelló", "Sant Vicenç dels Horts", "Can Ros", "Quatre Camins", "Pallejà", "Sant Andreu de la Barca", "El Palau", "Martorell Vila | Castellbisbal", "Martorell Central", "Martorell Enllaç", "Abrera", "Olesa de Montserrat", "Aeri de Montserrat", "Monistrol de Montserrat", "Castellbell i el Vilar", "Sant Vicenç | CastellGalí", "Manresa-Viladordis", "Manresa-Alta", "Manresa-Baixador"]
@@ -103,13 +103,13 @@ r8_tornada = helpers.cleanup_trainschedule(schedule[0])
 url = "https://rodalies.gencat.cat/web/.content/02_Horaris/horaris/R2.pdf"
 schedule = tabula.read_pdf(url, pages=1, stream=True, lattice=False, multiple_tables=True, area=area_r2_anada_feiners)
 schedule[0].columns = estacions_r2
-r2_anada = helpers.cleanup_trainschedule(schedule[0])
+r2_anada_feiners = helpers.cleanup_trainschedule(schedule[0])
 
 # R2 (St. Vicenç de Calders - Maçanet)
 url = "https://rodalies.gencat.cat/web/.content/02_Horaris/horaris/R2.pdf"
 schedule = tabula.read_pdf(url, pages=2, stream=True, lattice=False, multiple_tables=True, area=area_r2_tornada_feiners)
 schedule[0].columns = estacions_r2[::-1]
-r2_tornada = helpers.cleanup_trainschedule(schedule[0])
+r2_tornada_feiners = helpers.cleanup_trainschedule(schedule[0])
 
 # R3 (Hospitalet-Vic)
 url = "https://rodalies.gencat.cat/web/.content/02_Horaris/horaris/R3.pdf"
@@ -146,6 +146,59 @@ schedule[0] = schedule[0].iloc[:, : len(estacions_r4)]
 schedule[0].columns = estacions_r4
 r4_tornada_feiners = helpers.cleanup_trainschedule(schedule[0])
 
+# Line R2 is divided between R2 North, R2 and R2 South. However, this is not consistent and some trains overlap these lines.
+# Separates the R2 line into north, central and south portions
+def get_r2_nordcentresud(df):
+    # North
+    df_nord = df.copy()
+    df_nord = df_nord.drop(df_nord[df_nord['Castelldefels'].notna()].index) # Si surt Castelldefels, tampoc es Centre
+    df_nord = df_nord.drop(df_nord[df_nord['Barcelona - Estació de França'].notna()].index) # Si surt l'estació de França, tampoc es Nord
+    df_nord = df_nord.dropna(axis=0, how='all') # Esborrem les files buides
+    df_nord = df_nord.dropna(axis=1, how='all') # Esborrem les columnes buides
+
+    # Center
+    df_centre = df.copy()
+    df_centre = df_centre[(df_centre['Aeroport'].isnull()) & (df_centre['Barcelona - Estació de França'].isnull())] # Si paren a Aeroport o Estació de França, no poden ser R2 centre.
+    df_centre = df_centre.drop(df_centre[df_centre['Vilanova i la Geltrú'].notna()].index) # Si surt Vilanova, tampoc es Centre
+    df_centre = df_centre.drop(df_centre[df_centre['Sant Celoni'].notna()].index) # Si surt Sant Celoni, tampoc es Centre
+    df_centre = df_centre.dropna(axis=0, how='all') # Delete empty rows (not really necessary here)
+    df_centre = df_centre.dropna(axis=1, how='all') # Esborrem les columnes buides
+
+    # South
+    df_sud = df.copy()
+    df_sud = df_sud.dropna(subset=['Barcelona - Estació de França'], how='all') # Ens quedem només aquells que comencen a Estació de França
+    df_sud = df_sud.drop(df_sud[df_sud['Aeroport'].notna()].index) # Si surt l'aeroport, tampoc es Nord
+    df_sud = df_sud.dropna(axis=1, how='all') # Esborrem les columnes buides
+
+    # Other
+    #  Get the rows that did not fit any of the three dataframes, and create another one (df_other) 
+    index_subsets = pd.concat([df_nord, df_centre, df_sud]).index
+    index_original = ~df.index.isin(index_subsets)
+    df_other = df.loc[index_original]
+
+    #  Now split the others into two (until Passeig de Gràcia, and from Sants)
+    df_other_1 = df_other.loc[:, 'Maçanet-Massanes':'Barcelona-Passeig de Gràcia'] 
+    df_other_2 = df_other.loc[:, 'Barcelona-Sants':'Sant Vicenç de Calders']
+
+    #  If any lines contain Airport, it's North. If any lines contain Estació de França, it's south
+    #  then concat the remainder to their corresponding dataframe (north or south)
+    df_nord = pd.concat([df_nord, df_other_1[df_other_1['Barcelona - Estació de França'].isnull()]]).drop(columns='Barcelona - Estació de França')
+    df_sud = pd.concat([df_sud, df_other_2[df_other_2['Aeroport'].isnull()]]).drop(columns='Aeroport')
+
+    # Now deal with the train that starts at Estació de França but ends at Aeroport
+    df_sud = pd.concat([df_sud, df_other[df_other['Aeroport'].notnull() & df_other['Barcelona - Estació de França'].notnull()].loc[:, 'Barcelona - Estació de França':'Barcelona-Passeig de Gràcia']])
+    df_nord = pd.concat([df_nord, df_other[df_other['Aeroport'].notnull() & df_other['Barcelona - Estació de França'].notnull()].loc[:, 'Barcelona-Sants':'Aeroport']])
+
+    df_nord.sort_index(inplace=True)
+    df_sud.sort_index(inplace=True)
+
+    return df_nord, df_centre, df_sud
+
+r2_nord_anada_feiners, r2_centre_anada_feiners, r2_sud_anada_feiners = get_r2_nordcentresud(r2_anada_feiners)
+r2_nord_tornada_feiners, r2_centre_tornada_feiners, r2_sud_tornada_feiners = get_r2_nordcentresud(r2_tornada_feiners[r2_tornada_feiners.columns[::-1]]) # Reverse columns, so the function works
+r2_nord_tornada_feiners, r2_centre_tornada_feiners, r2_sud_tornada_feiners = [df[df.columns[::-1]] for df in [r2_nord_tornada_feiners, r2_centre_tornada_feiners, r2_sud_tornada_feiners]] # Reverse back
+
+
 print("...done")
 
 tz = pytz.timezone('Europe/Madrid') # zona horària de Madrid 
@@ -178,8 +231,23 @@ def generate_data():
                 },
                 {
                     "trainLine": "Rodalies R2",
-                    "positions1": helpers.find_alltrains(r2_anada, bcn_time),
-                    "positions2": helpers.find_alltrains(r2_tornada, bcn_time, inverse=True)
+                    "positions1": helpers.find_alltrains(r2_anada_feiners, bcn_time),
+                    "positions2": helpers.find_alltrains(r2_tornada_feiners, bcn_time, inverse=True)
+                },
+                {
+                    "trainLine": "Rodalies R2 Nord",
+                    "positions1": helpers.find_alltrains(r2_nord_anada_feiners, bcn_time),
+                    "positions2": helpers.find_alltrains(r2_nord_tornada_feiners, bcn_time, inverse=True)
+                },
+                {
+                    "trainLine": "Rodalies R2 Centre",
+                    "positions1": helpers.find_alltrains(r2_centre_anada_feiners, bcn_time),
+                    "positions2": helpers.find_alltrains(r2_centre_tornada_feiners, bcn_time, inverse=True)
+                },
+                {
+                    "trainLine": "Rodalies R2 Sud",
+                    "positions1": helpers.find_alltrains(r2_sud_anada_feiners, bcn_time),
+                    "positions2": helpers.find_alltrains(r2_sud_tornada_feiners, bcn_time, inverse=True)
                 },
                 {
                     "trainLine": "Rodalies R3",
