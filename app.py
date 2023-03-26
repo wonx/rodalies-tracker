@@ -1,5 +1,5 @@
 # Import Required Modules
-from flask import Flask, render_template, jsonify, Response, stream_with_context
+from flask import Flask, render_template, Response, stream_with_context
 import pandas as pd
 import helpers
 import tabula
@@ -39,23 +39,27 @@ print("Getting train schedules...")
 
 # R1 (L'Hospitalet - Maçanet)
 url = "https://rodalies.gencat.cat/web/.content/02_Horaris/horaris/R1.pdf"
+url = "static/horarispdf/R1.pdf"
 schedule = tabula.read_pdf(url, pages=1, stream=True, lattice=False, multiple_tables=True, area=area_r1_anada_feiners)
 schedule[0].columns = estacions_r1
 r1_anada_feiners = helpers.cleanup_trainschedule(schedule[0])
 
 # R1 (Maçanet - L'Hospitalet)
 url = "https://rodalies.gencat.cat/web/.content/02_Horaris/horaris/R1.pdf"
+url = "static/horarispdf/R1.pdf"
 schedule = tabula.read_pdf(url, pages=2, stream=True, lattice=False, multiple_tables=True, area=area_r1_tornada_feiners)
 schedule[0].columns = estacions_r1[::-1]
 r1_tornada_feiners = helpers.cleanup_trainschedule(schedule[0])
 
 # R5 (Pl España - Manresa)
 url = "static/horarispdf/R5_Manresa_220x450_LA_octubre_20.pdf"
+url = "static/horarispdf/R5_Manresa_220x450_LA_octubre_20.pdf"
 schedule = tabula.read_pdf(url, pages=1, stream=True, lattice=True, multiple_tables=False, guess=False, area=area_r5_anada_feiners, pandas_options={'header': None})
 schedule[0].columns = estacions_r5
 r5_anada_feiners = helpers.cleanup_trainschedule(schedule[0])
 
 # R5 (Manresa - Pl Espanya)
+url = "static/horarispdf/R5_Manresa_220x450_LA_octubre_20.pdf"
 url = "static/horarispdf/R5_Manresa_220x450_LA_octubre_20.pdf"
 schedule = tabula.read_pdf(url, pages=1, stream=True, lattice=True, multiple_tables=False, guess=False, area=area_r5_tornada_feiners, pandas_options={'header': None})
 schedule[0].columns = estacions_r5[::-1]
@@ -77,54 +81,63 @@ r6_tornada_feiners = helpers.cleanup_trainschedule(schedule[0])
 
 # R7 (Bcn St Andreu-Cerdanyola Universitat)
 url = "https://rodalies.gencat.cat/web/.content/02_Horaris/horaris/R7.pdf"
+url = "static/horarispdf/R7.pdf"
 schedule = tabula.read_pdf(url, pages=1, stream=True, lattice=False, multiple_tables=True, area=area_r7_anada)
 schedule[0].columns = estacions_r7
 r7_anada = helpers.cleanup_trainschedule(schedule[0])
 
 # R7 (Cerdanyola Universitat - Bcn St Andreu)
 url = "https://rodalies.gencat.cat/web/.content/02_Horaris/horaris/R7.pdf"
+url = "static/horarispdf/R7.pdf"
 schedule = tabula.read_pdf(url, pages=2, stream=True, lattice=False, multiple_tables=True, area=area_r7_tornada)
 schedule[0].columns = estacions_r7[::-1]
 r7_tornada = helpers.cleanup_trainschedule(schedule[0])
 
 # R8 (Martorell-Granollers)
 url = "https://rodalies.gencat.cat/web/.content/02_Horaris/horaris/R8.pdf"
+url = "static/horarispdf/R8.pdf"
 schedule = tabula.read_pdf(url, pages=1, stream=True, lattice=False, multiple_tables=True, area=area_r8_anada)
 schedule[0].columns = estacions_r8
 r8_anada = helpers.cleanup_trainschedule(schedule[0])
 
 # R8 (Granollers-Martorell)
 url = "https://rodalies.gencat.cat/web/.content/02_Horaris/horaris/R8.pdf"
+url = "static/horarispdf/R8.pdf"
 schedule = tabula.read_pdf(url, pages=1, stream=True, lattice=False, multiple_tables=True, area=area_r8_tornada)
 schedule[0].columns = estacions_r8[::-1]
 r8_tornada = helpers.cleanup_trainschedule(schedule[0])
 
 # R2 (Maçanet - St. Vicenç de Calders)
 url = "https://rodalies.gencat.cat/web/.content/02_Horaris/horaris/R2.pdf"
+url = "static/horarispdf/R2.pdf"
 schedule = tabula.read_pdf(url, pages=1, stream=True, lattice=False, multiple_tables=True, area=area_r2_anada_feiners)
 schedule[0].columns = estacions_r2
 r2_anada_feiners = helpers.cleanup_trainschedule(schedule[0])
 
 # R2 (St. Vicenç de Calders - Maçanet)
 url = "https://rodalies.gencat.cat/web/.content/02_Horaris/horaris/R2.pdf"
+url = "static/horarispdf/R2.pdf"
 schedule = tabula.read_pdf(url, pages=2, stream=True, lattice=False, multiple_tables=True, area=area_r2_tornada_feiners)
 schedule[0].columns = estacions_r2[::-1]
 r2_tornada_feiners = helpers.cleanup_trainschedule(schedule[0])
 
 # R3 (Hospitalet-Vic)
 url = "https://rodalies.gencat.cat/web/.content/02_Horaris/horaris/R3.pdf"
+url = "static/horarispdf/R3.pdf"
 schedule = tabula.read_pdf(url, pages=1, stream=True, lattice=False, multiple_tables=True, area=area_r3_anada_feiners)
 schedule[0].columns = estacions_r3
 r3_anada = helpers.cleanup_trainschedule(schedule[0])
 
 # R3 (Vic-Hospitalet)
 url = "https://rodalies.gencat.cat/web/.content/02_Horaris/horaris/R3.pdf"
+url = "static/horarispdf/R3.pdf"
 schedule = tabula.read_pdf(url, pages=2, stream=True, lattice=False, multiple_tables=True, area=area_r3_tornada_feiners)
 schedule[0].columns = estacions_r3[::-1]
 r3_tornada = helpers.cleanup_trainschedule(schedule[0])
 
 # R4 (St. Vicenç de Calders - Manresa)
 url = "https://rodalies.gencat.cat/web/.content/02_Horaris/horaris/R4.pdf"
+url = "static/horarispdf/R4.pdf"
 schedule = tabula.read_pdf(url, pages=1, stream=True, lattice=True, multiple_tables=False, guess=False, area=area_r4_anada_feiners)
 schedule[0] = schedule[0].iloc[:, : len(estacions_r4)]
 schedule[0] = schedule[0].replace(">>> Cerdanyola Universitat", np.NaN) # Esborrar les celes amb aquest string
@@ -141,6 +154,7 @@ r4_anada_feiners = helpers.cleanup_trainschedule(schedule[0])
 
 # R4 (Manresa - St Vicenç de Calders)
 url = "https://rodalies.gencat.cat/web/.content/02_Horaris/horaris/R4.pdf"
+url = "static/horarispdf/R4.pdf"
 schedule = tabula.read_pdf(url, pages=2, stream=True, lattice=True, multiple_tables=False, guess=False, area=area_r4_tornada_feiners)
 schedule[0] = schedule[0].iloc[:, : len(estacions_r4)]
 schedule[0].columns = estacions_r4
@@ -201,6 +215,7 @@ r2_nord_tornada_feiners, r2_centre_tornada_feiners, r2_sud_tornada_feiners = [df
 
 print("...done")
 
+#tz = pytz.timezone('US/Eastern') # zona horària de NYC,f or testing purposes 
 tz = pytz.timezone('Europe/Madrid') # zona horària de Madrid 
 #bcn_time = datetime.now(tz).strftime("%H:%M:%S") # hora de Barcelona en format hh:mm
 #print(bcn_time)
@@ -289,4 +304,4 @@ def stream_data():
     return Response(stream_with_context(generate_data()), mimetype='text/event-stream')
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=9019, debug=True)
+    app.run(host='0.0.0.0', port=9019, debug=False)

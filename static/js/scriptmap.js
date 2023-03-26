@@ -4,12 +4,8 @@ var svgDoc;
 mySVG.addEventListener("load", function() {
     svgDoc = mySVG.contentDocument;
     
-    var stationPositions = [0.0000, 0.172, 0.284, 0.403, 
-      0.456, 0.5510, 0.5870, 0.6280, 
-      0.6600, 0.6960, 0.7485, 0.7832, 
-      0.8250, 0.8670, 0.9070, 0.9490, 
-      1.0000]
-    var pathId = "path9388"
+    var stationPositions = [0.00, 0.0250, 0.0395, 0.0565, 0.0720, 0.0890, 0.1030, 0.1210, 0.1415, 0.1625, 0.1830, 0.2040, 0.2250, 0.2460, 0.2670, 0.2875, 0.3090, 0.3300, 0.3510, 0.3730, 0.3950, 0.4160, 0.5740, 0.6580, 0.6915, 0.7415, 0.8560]
+    var pathId = "path9386"
     //addStations(svgDoc, pathId, stationPositions);
 
     // Paths - lines correspondence in svg file:
@@ -93,6 +89,21 @@ eventSource.onmessage = function(event) {
   const data = JSON.parse(event.data);
   console.log(data);
   console.log(svgDoc)
+  var r1stationPositions = [0.856, 0.7415, 0.6915, 0.658, 
+    0.574, 0.416, 0.395, 0.373, 
+    0.351, 0.33, 0.309, 0.2875, 
+    0.267, 0.246, 0.225, 0.204, 
+    0.183, 0.1625, 0.1415, 0.121, 
+    0.103, 0.089, 0.072, 0.0565, 
+    0.0395, 0.025, 0] // Per a continuar fins a Molins de Rei, afegir: 0.9085, 0.9385, 0.969, 1.0]
+  var r2nordstationPositions = [0.000, 0.0355, 0.0645, 0.0930, 
+    0.1230, 0.1520, 0.1825, 0.2120, 
+    0.2405, 0.2720, 0.3000, 0.3240, 
+    0.3475, 0.3715, 0.4495, 0.5215, 
+    0.6085, 0.7120, 0.8295, 0.8705, 1.000]
+  var r2centrestationPositions = [1.0, 0.9625, 0.931, 0.902, 
+    0.8705, 0.7595, 0.6745, 0.5605, 
+    0.424, 0.263, 0.2105, 0.0945, 0.05, 0]
   var r2sudstationPositions = [0.0000, 0.172, 0.284, 0.403, 
     0.456, 0.5510, 0.5870, 0.6280, 
     0.6600, 0.6960, 0.7485, 0.7832, 
@@ -121,9 +132,13 @@ eventSource.onmessage = function(event) {
   //data.forEach(line => {
   //  setTrainMarkers(svgDoc, line.positions1[0], r3stationPositions, "green");
   //});
-  console.log(data[4]) //data[2] es la linia R3
+  //console.log(data[4]) //data[2] es la linia R3
   color1 = "yellow"
   color2 = "orange"
+
+  setTrainMarkers(svgDoc, "path9386", data[0].positions1, data[0].positions2, r1stationPositions, color1, color2); // R1
+  setTrainMarkers(svgDoc, "path9390", data[2].positions1, data[2].positions2, r2nordstationPositions, color1, color2); // R2 north
+  setTrainMarkers(svgDoc, "path9552", data[3].positions1, data[3].positions2, r2centrestationPositions, color1, color2); // R2 centre
   setTrainMarkers(svgDoc, "path9388", data[4].positions1, data[4].positions2, r2sudstationPositions, color1, color2); // R2 south
   setTrainMarkers(svgDoc, "path9823_joined", data[5].positions1, data[5].positions2, r3stationPositions, color1, color2); //R3
   setTrainMarkers(svgDoc, "path9534", data[6].positions1, data[6].positions2, r4stationPositions, color1, color2); //R4
