@@ -200,7 +200,7 @@ def get_r2_nordcentresud(df):
     df_sud = pd.concat([df_sud, df_other_2[df_other_2['Aeroport'].isnull()]]).drop(columns='Aeroport')
 
     # Now deal with the train that starts at Estació de França but ends at Aeroport
-    df_sud = pd.concat([df_sud, df_other[df_other['Aeroport'].notnull() & df_other['Barcelona - Estació de França'].notnull()].loc[:, 'Barcelona - Estació de França':'Barcelona-Passeig de Gràcia']])
+    df_sud = pd.concat([df_sud, df_other[df_other['Aeroport'].notnull() & df_other['Barcelona - Estació de França'].notnull()].loc[:, 'Barcelona - Estació de França':'Barcelona-Sants']])
     df_nord = pd.concat([df_nord, df_other[df_other['Aeroport'].notnull() & df_other['Barcelona - Estació de França'].notnull()].loc[:, 'Barcelona-Sants':'Aeroport']])
 
     df_nord.sort_index(inplace=True)
