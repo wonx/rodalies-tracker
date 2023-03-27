@@ -19,7 +19,7 @@ mySVG.addEventListener("load", function() {
     // R50: path9518-1
     // S4: path9516
     // R6: path9514
-    // R60: path9512 + path9514-9
+    // R60: path9514-9_joined
     // R7: path9845-4
     // R8: path9845
 
@@ -150,7 +150,22 @@ eventSource.onmessage = function(event) {
     0.3100, 0.2675, 0.2110, 0.1885, 
     0.1580, 0.1310, 0.1070, 0.0790, 
     0.0485, 0.0220, 0.00]    
-
+  var r6stationPositions = [0.00, 0.026, 0.0495, 0.0755, 
+    0.108, 0.142, 0.177, 0.22, 
+    0.2635, 0.3005, 0.322, 0.3445, 
+    0.3655, 0.3875, 0.4085, 0.431, 
+    0.452, 0.4745, 0.496, 0.5185, 
+    0.5785, 0.613, 0.713, 0.7445, 
+    0.7755, 0.808, 0.8405, 0.8725, 
+    0.9035, 0.936, 0.9665, 1.0]          
+    var r60stationPositions = [1.000, 0.974, 0.951, 0.92, 
+      0.889, 0.855, 0.824, 0.779, 
+      0.738, 0.691, 0.669, 0.646, 
+      0.626, 0.603, 0.582, 0.56, 
+      0.537, 0.516, 0.494, 0.472, 
+      0.413, 0.379, 0.285, 0.254, 
+      0.222, 0.191, 0.159, 0.127, 
+      0.096, 0.064, 0.032, 0.00]
   var r7stationPositions = [0, 0.1, 0.195, 0.497, 0.607, 0.722, 1];
   var r8stationPositions = [1, 0.915, 0.6837, 0.499, 0.4237, 0.208, 0.055, 0.0295, 0];
   //data.forEach(line => {
@@ -169,7 +184,9 @@ eventSource.onmessage = function(event) {
   setTrainMarkers(svgDoc, "path9518", data[8].positions1, data[8].positions2, r5stationPositions, color1, color2); //R5
   setTrainMarkers(svgDoc, "path9516", data[9].positions1, data[9].positions2, s4stationPositions, color1, color2); //S4
   setTrainMarkers(svgDoc, "path9518-1", data[10].positions1, data[10].positions2, r50stationPositions, color1, color2); //R50
-  setTrainMarkers(svgDoc, "path9845-4", data[12].positions1, data[12].positions2, r7stationPositions, color1, color2); //R7
-  setTrainMarkers(svgDoc, "path9845", data[13].positions1, data[13].positions2, r8stationPositions, color1, color2); //R8
+  setTrainMarkers(svgDoc, "path9514", data[12].positions1, data[12].positions2, r6stationPositions, color1, color2) // R6
+  setTrainMarkers(svgDoc, "path9514-9_joined", data[13].positions1, data[13].positions2, r60stationPositions, color1, color2) // R60
+  setTrainMarkers(svgDoc, "path9845-4", data[14].positions1, data[14].positions2, r7stationPositions, color1, color2); //R7
+  setTrainMarkers(svgDoc, "path9845", data[15].positions1, data[15].positions2, r8stationPositions, color1, color2); //R8
 };
 

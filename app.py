@@ -237,6 +237,21 @@ def get_r5_services(df):
 r5_r5_anada_feiners, r5_s4_anada_feiners, r5_r50_anada_feiners = get_r5_services(r5_anada_feiners)
 r5_r5_tornada_feiners, r5_s4_tornada_feiners, r5_r50_tornada_feiners = get_r5_services(r5_tornada_feiners)
 
+
+def get_r6_services(df):
+    #R6 (Stops at all stations, like Martorell Enllaç)
+    df_r6  = df.copy()
+    df_r6 = df_r6.dropna(subset=['Martorell Enllaç'], how='all') # Only R5 stops there.
+
+    #R50 (Ends at Manresa Baixador, does not stop at all stations, like Aeri de Montserrat)
+    df_r60  = df.copy()
+    df_r60 = df_r60.drop(df_r60[df_r60['Martorell Enllaç'].notna()].index) # Does not stop there
+
+    return df_r6, df_r60
+
+r6_r6_anada_feiners, r6_r60_anada_feiners, = get_r6_services(r6_anada_feiners)
+r6_r6_tornada_feiners, r6_r60_tornada_feiners = get_r6_services(r6_tornada_feiners)
+
 print("...done")
 
 #tz = pytz.timezone('US/Eastern') # zona horària de NYC,f or testing purposes 
@@ -322,6 +337,16 @@ def generate_data():
                     "trainLine": "Rodalies R6 R60",
                     "positions1": helpers.find_alltrains(r6_anada_feiners, bcn_time),
                     "positions2": helpers.find_alltrains(r6_tornada_feiners, bcn_time, inverse=True)
+                },
+                {
+                    "trainLine": "Rodalies R6",
+                    "positions1": helpers.find_alltrains(r6_r6_anada_feiners, bcn_time),
+                    "positions2": helpers.find_alltrains(r6_r6_tornada_feiners, bcn_time, inverse=True)
+                },
+                {
+                    "trainLine": "Rodalies R60",
+                    "positions1": helpers.find_alltrains(r6_r60_anada_feiners, bcn_time),
+                    "positions2": helpers.find_alltrains(r6_r60_tornada_feiners, bcn_time, inverse=True)
                 },
                 {
                     "trainLine": "Rodalies R7",
