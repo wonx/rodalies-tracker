@@ -156,7 +156,7 @@ eventSource.onmessage = function(event) {
   //data.forEach(line => {
   //  setTrainMarkers(svgDoc, line.positions1[0], r3stationPositions, "green");
   //});
-  //console.log(data[4]) //data[2] es la linia R3
+  console.log(data[9]) //data[2] es la linia R3
   color1 = "yellow"
   color2 = "orange"
 
@@ -167,7 +167,7 @@ eventSource.onmessage = function(event) {
   setTrainMarkers(svgDoc, "path9823_joined", data[5].positions1, data[5].positions2, r3stationPositions, color1, color2); //R3
   setTrainMarkers(svgDoc, "path9534", data[6].positions1, data[6].positions2, r4stationPositions, color1, color2); //R4
   setTrainMarkers(svgDoc, "path9518", data[8].positions1, data[8].positions2, r5stationPositions, color1, color2); //R5
-  setTrainMarkers(svgDoc, "path9516", data[9].positions1, data[9].positions2, s4stationPositions, color1, color2); //R5
+  setTrainMarkers(svgDoc, "path9516", data[9].positions1, data[9].positions2, s4stationPositions, color1, color2); //S4
   setTrainMarkers(svgDoc, "path9518-1", data[10].positions1, data[10].positions2, r50stationPositions, color1, color2); //R50
   setTrainMarkers(svgDoc, "path9845-4", data[12].positions1, data[12].positions2, r7stationPositions, color1, color2); //R7
   setTrainMarkers(svgDoc, "path9845", data[13].positions1, data[13].positions2, r8stationPositions, color1, color2); //R8
