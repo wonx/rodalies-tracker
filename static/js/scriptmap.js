@@ -4,8 +4,8 @@ var svgDoc;
 mySVG.addEventListener("load", function() {
     svgDoc = mySVG.contentDocument;
     
-    var stationPositions = [0.00, 0.0250, 0.0395, 0.0565, 0.0720, 0.0890, 0.1030, 0.1210, 0.1415, 0.1625, 0.1830, 0.2040, 0.2250, 0.2460, 0.2670, 0.2875, 0.3090, 0.3300, 0.3510, 0.3730, 0.3950, 0.4160, 0.5740, 0.6580, 0.6915, 0.7415, 0.8560]
-    var pathId = "path9386"
+    var stationPositions = [1.0, 0.9625, 0.9240, 0.8905, 0.8430, 0.7900, 0.7340, 0.6690, 0.6045, 0.5600, 0.5290, 0.4965, 0.4630, 0.4305, 0.3970, 0.3650, 0.3315, 0.2985, 0.2660, 0.2330, 0.1445, 0.0925, 0.0260, 0.00]
+    var pathId = "path9516"
     //addStations(svgDoc, pathId, stationPositions);
 
     // Paths - lines correspondence in svg file:
@@ -17,6 +17,7 @@ mySVG.addEventListener("load", function() {
     // R4: path9534
     // R5: path9518
     // R50: path9518-1
+    // S4: path9516
     // R6: path9514
     // R60: path9512 + path9514-9
     // R7: path9845-4
@@ -127,6 +128,29 @@ eventSource.onmessage = function(event) {
     0.2564, 0.2375, 0.2212, 0.1531,
     0.1375, 0.1085, 0.0935, 0.0785,
     0.0638, 0.0487, 0.034 , 0.0000]
+  var r5stationPositions = [1.0, 0.9670, 0.9390, 0.9130, 
+    0.8750, 0.8320, 0.7825, 0.7285, 
+    0.6750, 0.6485, 0.6220, 0.5950, 
+    0.5680, 0.5410, 0.5140, 0.4880, 
+    0.4605, 0.4330, 0.4070, 0.3790, 
+    0.3075, 0.2640, 0.2080, 0.1865, 
+    0.1565, 0.1300, 0.1065, 0.0780, 
+    0.0470, 0.0205, 0.00]
+  var s4stationPositions = [1.0, 0.9625, 0.9240, 0.8905, 
+    0.8430, 0.7900, 0.7340, 0.6690, 
+    0.6045, 0.5600, 0.5290, 0.4965, 
+    0.4630, 0.4305, 0.3970, 0.3650, 
+    0.3315, 0.2985, 0.2660, 0.2330, 
+    0.1445, 0.0925, 0.0260, 0.00]
+  var r50stationPositions = [1.0, 0.9680, 0.9380, 0.9165, 
+    0.8790, 0.8345, 0.7795, 0.7250, 
+    0.6720, 0.6570, 0.6295, 0.6025, 
+    0.5755, 0.5480, 0.5205, 0.4930, 
+    0.4655, 0.4395, 0.4105, 0.3855, 
+    0.3100, 0.2675, 0.2110, 0.1885, 
+    0.1580, 0.1310, 0.1070, 0.0790, 
+    0.0485, 0.0220, 0.00]    
+
   var r7stationPositions = [0, 0.1, 0.195, 0.497, 0.607, 0.722, 1];
   var r8stationPositions = [1, 0.915, 0.6837, 0.499, 0.4237, 0.208, 0.055, 0.0295, 0];
   //data.forEach(line => {
@@ -142,7 +166,10 @@ eventSource.onmessage = function(event) {
   setTrainMarkers(svgDoc, "path9388", data[4].positions1, data[4].positions2, r2sudstationPositions, color1, color2); // R2 south
   setTrainMarkers(svgDoc, "path9823_joined", data[5].positions1, data[5].positions2, r3stationPositions, color1, color2); //R3
   setTrainMarkers(svgDoc, "path9534", data[6].positions1, data[6].positions2, r4stationPositions, color1, color2); //R4
-  setTrainMarkers(svgDoc, "path9845-4", data[9].positions1, data[9].positions2, r7stationPositions, color1, color2); //R7
-  setTrainMarkers(svgDoc, "path9845", data[10].positions1, data[10].positions2, r8stationPositions, color1, color2); //R8
+  setTrainMarkers(svgDoc, "path9518", data[8].positions1, data[8].positions2, r5stationPositions, color1, color2); //R5
+  setTrainMarkers(svgDoc, "path9516", data[9].positions1, data[9].positions2, s4stationPositions, color1, color2); //R5
+  setTrainMarkers(svgDoc, "path9518-1", data[10].positions1, data[10].positions2, r50stationPositions, color1, color2); //R50
+  setTrainMarkers(svgDoc, "path9845-4", data[12].positions1, data[12].positions2, r7stationPositions, color1, color2); //R7
+  setTrainMarkers(svgDoc, "path9845", data[13].positions1, data[13].positions2, r8stationPositions, color1, color2); //R8
 };
 

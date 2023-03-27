@@ -53,13 +53,11 @@ r1_tornada_feiners = helpers.cleanup_trainschedule(schedule[0])
 
 # R5 (Pl España - Manresa)
 url = "static/horarispdf/R5_Manresa_220x450_LA_octubre_20.pdf"
-url = "static/horarispdf/R5_Manresa_220x450_LA_octubre_20.pdf"
 schedule = tabula.read_pdf(url, pages=1, stream=True, lattice=True, multiple_tables=False, guess=False, area=area_r5_anada_feiners, pandas_options={'header': None})
 schedule[0].columns = estacions_r5
 r5_anada_feiners = helpers.cleanup_trainschedule(schedule[0])
 
 # R5 (Manresa - Pl Espanya)
-url = "static/horarispdf/R5_Manresa_220x450_LA_octubre_20.pdf"
 url = "static/horarispdf/R5_Manresa_220x450_LA_octubre_20.pdf"
 schedule = tabula.read_pdf(url, pages=1, stream=True, lattice=True, multiple_tables=False, guess=False, area=area_r5_tornada_feiners, pandas_options={'header': None})
 schedule[0].columns = estacions_r5[::-1]
@@ -212,6 +210,32 @@ r2_nord_anada_feiners, r2_centre_anada_feiners, r2_sud_anada_feiners = get_r2_no
 r2_nord_tornada_feiners, r2_centre_tornada_feiners, r2_sud_tornada_feiners = get_r2_nordcentresud(r2_tornada_feiners[r2_tornada_feiners.columns[::-1]]) # Reverse columns, so the function works
 r2_nord_tornada_feiners, r2_centre_tornada_feiners, r2_sud_tornada_feiners = [df[df.columns[::-1]] for df in [r2_nord_tornada_feiners, r2_centre_tornada_feiners, r2_sud_tornada_feiners]] # Reverse back
 
+# R5 has 3 different services (R5, R50 and S4), depending on which stations the trains stop.
+def get_r5_services(df):
+    #R5 (Ends at Manresa Baixador (end of the line), doesn't stop at all stations)
+    df_r5  = df.copy()
+    df_r5 = df_r5.dropna(subset=['Aeri de Montserrat'], how='all') # Only R5 stops there.
+
+    #S4 (Ends at Olesa de Montserrat, stops at all stations)
+    df_s4  = df.copy()
+    # Stops at Martorell Enllaç but not at Aeri de Montserrat
+    df_s4 = df_s4.dropna(subset=['Martorell Enllaç'], how='all') 
+    df_s4 = df_s4.drop(df_s4[df_s4['Aeri de Montserrat'].notna()].index)
+
+    #R50 (Ends at Manresa Baixador, does not stop at all stations (even fewer than R5), like Aeri de Montserrat)
+    df_r50  = df.copy()
+    df_r50 = df_r50.dropna(subset=['Manresa-Baixador'], how='all')
+    df_r50 = df_r50.drop(df_r50[df_r50['Aeri de Montserrat'].notna()].index)
+
+    #  Alternative: Get the rows that did not fit any of the three dataframes, and create another one (df_other) 
+    #index_subsets = pd.concat([df_r5, df_s4]).index
+    #index_original = ~df.index.isin(index_subsets)
+    #df_r50 = df.loc[index_original]
+
+    return df_r5, df_s4, df_r50
+
+r5_r5_anada_feiners, r5_s4_anada_feiners, r5_r50_anada_feiners = get_r5_services(r5_anada_feiners)
+r5_r5_tornada_feiners, r5_s4_tornada_feiners, r5_r50_tornada_feiners = get_r5_services(r5_tornada_feiners)
 
 print("...done")
 
@@ -278,6 +302,21 @@ def generate_data():
                     "trainLine": "Rodalies R5 R50 S4",
                     "positions1": helpers.find_alltrains(r5_anada_feiners, bcn_time),
                     "positions2": helpers.find_alltrains(r5_tornada_feiners, bcn_time, inverse=True)
+                },
+                {
+                    "trainLine": "Rodalies R5",
+                    "positions1": helpers.find_alltrains(r5_r5_anada_feiners, bcn_time),
+                    "positions2": helpers.find_alltrains(r5_r5_tornada_feiners, bcn_time, inverse=True)
+                },
+                {
+                    "trainLine": "Rodalies S4",
+                    "positions1": helpers.find_alltrains(r5_s4_anada_feiners, bcn_time),
+                    "positions2": helpers.find_alltrains(r5_s4_tornada_feiners, bcn_time, inverse=True)
+                },
+                {
+                    "trainLine": "Rodalies R50",
+                    "positions1": helpers.find_alltrains(r5_r50_anada_feiners, bcn_time),
+                    "positions2": helpers.find_alltrains(r5_r50_tornada_feiners, bcn_time, inverse=True)
                 },
                 {
                     "trainLine": "Rodalies R6 R60",
