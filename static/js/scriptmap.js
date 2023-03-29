@@ -15,13 +15,21 @@ mySVG.addEventListener("load", function() {
     // R2 sud: path9388
     // R3: path9823_joined
     // R4: path9534
-    // R5: path9518
-    // R50: path9518-1
-    // S4: path9516
-    // R6: path9514
-    // R60: path9514-9_joined
+    // R5: path9518 (Manresa)
+    // R50: path9518-1 (Manresa)
+    // R6: path9514 (Igualada)
+    // R60: path9514-9_joined (Igualada)
     // R7: path9845-4
     // R8: path9845
+    // S1: path9811 (Terrassa Nacions Unides)
+    // S2: path9809(Sabadell - Parc del Nord)
+    // S3: path9522-1 (Can Ros)
+    // S4: path9516 (Olesa de Montserrat)
+    // S5: (Sant Cugat)
+    // S6: (Universitat Autonoma)
+    // S7: (Rubí)
+    // S8: path9512-2 (Martorell Enllaç)
+    // S9: path9522 (Quatre Camins)
 
     // Example usage: add a marker at station 2.5 (between station 2 and 3)
     //setTrainMarkers(svgDoc, 3.15, stationPositions, "green");
@@ -158,7 +166,7 @@ eventSource.onmessage = function(event) {
     0.5785, 0.613, 0.713, 0.7445, 
     0.7755, 0.808, 0.8405, 0.8725, 
     0.9035, 0.936, 0.9665, 1.0]          
-    var r60stationPositions = [1.000, 0.974, 0.951, 0.92, 
+  var r60stationPositions = [1.000, 0.974, 0.951, 0.92, 
       0.889, 0.855, 0.824, 0.779, 
       0.738, 0.691, 0.669, 0.646, 
       0.626, 0.603, 0.582, 0.56, 
@@ -166,8 +174,24 @@ eventSource.onmessage = function(event) {
       0.413, 0.379, 0.285, 0.254, 
       0.222, 0.191, 0.159, 0.127, 
       0.096, 0.064, 0.032, 0.00]
-  var r7stationPositions = [0, 0.1, 0.195, 0.497, 0.607, 0.722, 1];
-  var r8stationPositions = [1, 0.915, 0.6837, 0.499, 0.4237, 0.208, 0.055, 0.0295, 0];
+  var s3stationPositions = [1.0, 0.949, 0.894, 0.805, 
+    0.734, 0.607, 0.508, 0.409, 
+    0.25, 0.199, 0.152, 0.1, 
+    0.054, 0.00]
+  var s8stationPositions = [1.000, 0.962, 0.924, 0.872, 
+    0.824, 0.7653, 0.724, 0.655, 
+    0.586, 0.500, 0.463, 0.430, 
+    0.396, 0.359, 0.324, 0.290, 
+    0.255, 0.220, 0.186, 0.150, 
+    0.056, 0.000]
+  var s9stationPositions = [1.0, 0.948, 0.895, 0.814, 
+    0.747, 0.67, 0.617, 0.521, 
+    0.427, 0.288, 0.243, 0.196, 
+    0.146, 0.098, 0.052, 0.0]
+  var r7stationPositions = [0, 0.1, 0.195, 0.497, 
+    0.607, 0.722, 1];
+  var r8stationPositions = [1, 0.915, 0.6837, 0.499, 
+    0.4237, 0.208, 0.055, 0.0295, 0];
   //data.forEach(line => {
   //  setTrainMarkers(svgDoc, line.positions1[0], r3stationPositions, "green");
   //});
@@ -186,7 +210,9 @@ eventSource.onmessage = function(event) {
   setTrainMarkers(svgDoc, "path9518-1", data[10].positions1, data[10].positions2, r50stationPositions, color1, color2); //R50
   setTrainMarkers(svgDoc, "path9514", data[12].positions1, data[12].positions2, r6stationPositions, color1, color2) // R6
   setTrainMarkers(svgDoc, "path9514-9_joined", data[13].positions1, data[13].positions2, r60stationPositions, color1, color2) // R60
-  setTrainMarkers(svgDoc, "path9845-4", data[14].positions1, data[14].positions2, r7stationPositions, color1, color2); //R7
-  setTrainMarkers(svgDoc, "path9845", data[15].positions1, data[15].positions2, r8stationPositions, color1, color2); //R8
+  setTrainMarkers(svgDoc, "path9522-1", data[15].positions1, data[15].positions2, s3stationPositions, color1, color2) // S3
+  setTrainMarkers(svgDoc, "path9512-2", data[16].positions1, data[16].positions2, s8stationPositions, color1, color2) // S8
+  setTrainMarkers(svgDoc, "path9522", data[17].positions1, data[17].positions2, s9stationPositions, color1, color2) // S9
+  setTrainMarkers(svgDoc, "path9845-4", data[17].positions1, data[17].positions2, r7stationPositions, color1, color2); //R7
+  setTrainMarkers(svgDoc, "path9845", data[18].positions1, data[18].positions2, r8stationPositions, color1, color2); //R8
 };
-
