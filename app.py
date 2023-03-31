@@ -17,6 +17,8 @@ estacions_r5=["Plaça Espanya", "Magòria-La Campana", "Ildefons Cerdà", "Europ
 estacions_r6=['Plaça Espanya', 'Magòria-La Campana', 'Ildefons Cerdà', 'Europa | Fira', 'Gornal', 'Sant Josep', 'L’Hospitalet-Av. Carrilet', 'Almeda', 'Cornellà Riera', 'Sant Boi', 'Molí Nou-Ciutat Cooperativa', 'Colònia Güell', 'Santa Coloma de Cervelló', 'Sant Vicenç dels Horts', 'Can Ros', 'Quatre Camins', 'Pallejà', 'Sant Andreu de la Barca', 'El Palau', 'Martorell Vila | Castellbisbal', 'Martorell Central', 'Martorell Enllaç', 'Sant Esteve Sesrovires', 'La Beguda', 'Can Parellada', 'Masquefa', 'Piera', 'Vallbona d’Anoia', 'Capellades', 'La Pobla de Claramunt', 'Vilanova del Camí', 'Igualada']
 estacions_r7=('Barcelona St. Andreu Arenal','Barcelona Torre del Baró','Montcada Bifurcació','Montcada i Reixac-Manresa','Montcada i Reixac-Sta. Maria', 'Cerdanyola del Vallès','Cerdanyola Universitat')
 estacions_r8=('Martorell', 'Castellbisbal', 'Rubí', 'Sant Cugat del Vallès', 'Cerdanyola Universitat', 'Santa Perpètua de Mogoda - Riera de caldes', 'Mollet - Sant Fost', 'Montmeló', 'Granollers Centre')
+estacions_s2s6=['Barcelona - Pl. Catalunya', 'Provença', 'Gràcia', 'Sant Gervasi', 'Muntaner', 'La Bonanova', 'Les Tres Torres', 'Sarrià', 'Peu del Funicular', 'Baixador de Vallvidrera', 'Les Planes', 'La Floresta', 'Valldoreix', 'Sant Cugat', 'Volpelleres', 'Sant Joan', 'Bellaterra', 'Universitat Autònoma', 'Sant Quirze', 'Can Feu | Gràcia', 'Sabadell Plaça Major', 'La Creu Alta', 'Sabadell Nord', 'Sabadell Parc del Nord']
+estacions_s1s5s7=['Barcelona - Pl. Catalunya', 'Provença', 'Gràcia', 'Sant Gervasi', 'Muntaner', 'La Bonanova', 'Les Tres Torres', 'Sarrià', 'Peu del Funicular', 'Baixador de Vallvidrera', 'Les Planes', 'La Floresta', 'Valldoreix', 'Sant Cugat', 'Mira-sol', 'Hospital General', 'Rubí', 'Les Fonts', 'Terrassa Rambla', 'Vallparadís Universitat', 'Terrassa Estació del Nord', 'Terrassa Nacions Unides']
 
 area_r1_anada_feiners = (605, 10, 2360, 950)
 area_r1_tornada_feiners = (605, 10, 2370, 950)
@@ -36,6 +38,22 @@ area_r7_anada = (620, 140, 1650, 800)
 area_r7_tornada = (620, 140, 1600, 800)
 area_r8_anada = (468, 10, 1300, 950)
 area_r8_tornada = (1625, 10, 2300, 950)
+area_s2s6_anada_feiners = [(410, 40, 600, 700), # 1st
+                           (600, 40, 630, 700), # 2nd (just 4 rows). Includes just the minutes. Will need to be repeated from 10 to 12.
+                           (630, 35, 700, 700), # 3rd
+                           (706, 35, 740, 700), # 4th (5 more rows), same case as 2nd
+                           (740, 35, 800, 700), # 5th (10 more rows), same case as 2nd
+                           (800, 35, 835, 700), # 6th (10 more rows), same case as 2nd
+                           (835, 35, 875, 700), # 7th (a normal one)
+                           (877, 30, 885, 700)] # 8th (last train for weekdays (except friday), just one row)
+area_s2s6_tornada_feiners = [(440, 40, 610, 700), # 1st (normal part, 5:01 to 9:43)
+                             (610, 30, 635, 690), # 2nd (just 4 rows)
+                             (640, 35, 795, 690), # 3rd (normal part again)
+                             (800, 30, 860, 690), # 4th (weird part one more time)
+                             (865, 35, 880, 690), # 5th (normal part, but just two rows...)
+                             (885, 30, 915, 690), # 6th (weird part one more time, but not as weird as part 4)
+                             (920, 30, 950, 690), # 7th (normal part again, 4 rows)
+                             (955, 30, 975, 690)] # 8th (normal part, but only fridays and weekdays before holidays)
 
 print("Getting train schedules...")
 
@@ -175,6 +193,171 @@ schedule[0] = schedule[0].iloc[:, : len(estacions_r4)]
 schedule[0].columns = estacions_r4
 r4_tornada_feiners = helpers.cleanup_trainschedule(schedule[0])
 
+
+# S2, and S6 (Pl. Catalunya - Universitat Autònoma/Sabadell)
+s2s6_anada_feiners = []
+url = "static/horarispdf/Sabadell_s2_s6_gener_19.pdf"
+
+ #part 1
+partindex = 0 
+schedule = tabula.read_pdf(url, pages=1, stream=True, lattice=False, multiple_tables=False, guess=False, area=area_s2s6_anada_feiners[partindex], pandas_options={'header': None})
+schedule[0].columns = estacions_s2s6
+s2s6_anada_feiners.append(helpers.cleanup_trainschedule(schedule[0]))
+#display(s2s6_anada_feiners_1)
+
+ # part 2 (de 10:07 a 12:07)
+partindex = 1
+h_values = [10, 11, 12]
+schedule = tabula.read_pdf(url, pages=1, stream=True, lattice=True, multiple_tables=False, guess=False, area=area_s2s6_anada_feiners[partindex], pandas_options={'header': None})
+schedule[0].columns = estacions_s2s6
+df_temp = schedule[0]
+#df_temp = cleanup_trainschedule(schedule[0])
+df_temp = df_temp.dropna(axis=0, how='all') # Drop empty rows
+df_temp = helpers.generate_hours(df_temp, h_values)
+df_temp = helpers.fix_time_discontinuity(df_temp)
+s2s6_anada_feiners.append(helpers.filter_interval(df_temp, "10:07", "12:07"))
+
+ # Part 3 (de 12:21 a 14:20)
+partindex = 2
+schedule = tabula.read_pdf(url, pages=1, stream=True, lattice=False, multiple_tables=False, guess=False, area=area_s2s6_anada_feiners[partindex], pandas_options={'header': None, 'dtype': str})
+schedule[0].columns = estacions_s2s6
+s2s6_anada_feiners.append(helpers.cleanup_trainschedule(schedule[0]))
+
+ # Part 4 (de 14:24 a 16:36)
+partindex = 3
+h_values = [14, 15, 16]
+schedule = tabula.read_pdf(url, pages=1, stream=True, lattice=True, multiple_tables=False, guess=False, area=area_s2s6_anada_feiners[partindex], pandas_options={'header': None})
+schedule[0].columns = estacions_s2s6
+df_temp = schedule[0]
+df_temp = df_temp.dropna(axis=0, how='all') # Drop empty rows
+df_temp = helpers.generate_hours(df_temp, h_values)
+df_temp = helpers.fix_time_discontinuity(df_temp)
+s2s6_anada_feiners.append(helpers.filter_interval(df_temp, "14:24", "16:36"))
+
+ # Part 5 (de 16:44 a 18:48)
+partindex = 4
+h_values = [16, 17, 18]
+schedule = tabula.read_pdf(url, pages=1, stream=True, lattice=True, multiple_tables=False, guess=False, area=area_s2s6_anada_feiners[partindex], pandas_options={'header': None})
+schedule[0].columns = estacions_s2s6
+df_temp = schedule[0]
+df_temp = df_temp.dropna(axis=0, how='all') # Drop empty rows
+df_temp = helpers.generate_hours(df_temp, h_values)
+df_temp = helpers.fix_time_discontinuity(df_temp)
+s2s6_anada_feiners.append(helpers.filter_interval(df_temp, "16:44", "18:48"))
+
+ # Part 6 (de 19:00 a 21:00)
+partindex = 5
+h_values = [19, 20, 21]
+schedule = tabula.read_pdf(url, pages=1, stream=True, lattice=True, multiple_tables=False, guess=False, area=area_s2s6_anada_feiners[partindex], pandas_options={'header': None})
+schedule[0].columns = estacions_s2s6
+df_temp = schedule[0]
+df_temp = df_temp.dropna(axis=0, how='all') # Drop empty rows
+df_temp = helpers.generate_hours(df_temp, h_values)
+df_temp = helpers.fix_time_discontinuity(df_temp)
+s2s6_anada_feiners.append(helpers.filter_interval(df_temp, "19:00", "21:00"))
+
+ # Part 7 (de 21:15 a 23:17)
+partindex = 6
+schedule = tabula.read_pdf(url, pages=1, stream=True, lattice=True, multiple_tables=False, guess=False, area=area_s2s6_anada_feiners[partindex], pandas_options={'header': None})
+schedule[0].columns = estacions_s2s6
+df_temp = helpers.cleanup_trainschedule(schedule[0])
+s2s6_anada_feiners.append(df_temp.dropna(axis=0, how='all')) # Drop empty rows
+
+ # Part 8 (Last trains weekdays before weekdays)
+partindex = 7
+schedule = tabula.read_pdf(url, pages=1, stream=True, lattice=True, multiple_tables=False, guess=False, area=area_s2s6_anada_feiners[partindex], pandas_options={'header': None})
+schedule[0].columns = estacions_s2s6
+df_temp = helpers.cleanup_trainschedule(schedule[0])
+s2s6_anada_feiners.append(df_temp.dropna(axis=0, how='all')) # Drop empty rows
+
+# Concat all the parts together
+s2s6_anada_feiners = pd.concat(s2s6_anada_feiners, axis=0)
+s2s6_anada_feiners.reset_index(drop=True, inplace=True)
+del schedule, url, h_values
+
+s2s6_tornada_feiners = []
+
+url = "static/horarispdf/Sabadell_s2_s6_gener_19.pdf"
+
+ #part 1
+partindex = 0
+schedule = tabula.read_pdf(url, pages=2, stream=True, lattice=False, multiple_tables=False, guess=False, area=area_s2s6_tornada_feiners[partindex], pandas_options={'header': None})
+schedule[0].columns = estacions_s2s6[::-1]
+s2s6_tornada_feiners.append(helpers.cleanup_trainschedule(schedule[0]))
+
+ #part 2
+partindex = 1
+h_values = [9, 10, 11, 12]
+schedule = tabula.read_pdf(url, pages=2, stream=True, lattice=True, multiple_tables=False, guess=False, area=area_s2s6_tornada_feiners[partindex], pandas_options={'header': None})
+df_temp = schedule[0]
+df_temp.iloc[3, :] = df_temp.iloc[3, :].shift(1) # The 4th row appears shifted to the left... correct that manually
+df_temp.drop(columns=0, inplace=True) # And now drop the first column, which is all Nan
+df_temp.columns = estacions_s2s6[::-1]
+df_temp = helpers.generate_hours(df_temp, h_values)
+df_temp = helpers.fix_time_discontinuity(df_temp)
+s2s6_tornada_feiners.append(helpers.filter_interval(df_temp, "9:55", "12:10"))
+
+ #part 3
+partindex = 2
+schedule = tabula.read_pdf(url, pages=2, stream=True, lattice=False, multiple_tables=False, guess=False, area=area_s2s6_tornada_feiners[partindex], pandas_options={'header': None})
+schedule[0].columns = estacions_s2s6[::-1]
+s2s6_tornada_feiners.append(helpers.cleanup_trainschedule(schedule[0]))
+
+ #part 4
+partindex = 3
+h_values = [16, 17, 18, 19]
+schedule = tabula.read_pdf(url, pages=2, stream=True, lattice=True, multiple_tables=False, guess=False, area=area_s2s6_tornada_feiners[partindex], pandas_options={'header': None})
+df_temp = schedule[0]
+df_temp.iloc[-1, :] = df_temp.iloc[-1, :].shift(1) # The last row appears shifted to the left... correct that manually
+df_temp.drop(columns=0, inplace=True) # And now drop the first column, which is all Nan
+df_temp.columns = estacions_s2s6[::-1]
+df_temp = helpers.generate_hours(df_temp, h_values)
+df_temp = helpers.filter_interval(df_temp, "16:52", "19:15")
+s2s6_tornada_feiners.append(helpers.fix_time_discontinuity(df_temp))
+s2s6_tornada_feiners[partindex].drop(2, inplace=True) # Ugly workaround, delete row 2, which has a train previous to the starting period (the fix_time_discontinuity() should take care of these cases, but there's just one, so...)
+
+ #part5
+partindex = 4
+schedule = tabula.read_pdf(url, pages=2, stream=True, lattice=False, multiple_tables=False, guess=False, area=area_s2s6_tornada_feiners[partindex], pandas_options={'header': None})
+schedule[0].columns = estacions_s2s6[::-1]
+s2s6_tornada_feiners.append(helpers.cleanup_trainschedule(schedule[0]))
+
+ #part6
+partindex = 5
+h_values = [19, 20, 21]
+schedule = tabula.read_pdf(url, pages=2, stream=True, lattice=True, multiple_tables=False, guess=False, area=area_s2s6_tornada_feiners[partindex], pandas_options={'header': None})
+df_temp = schedule[0]
+df_temp.iloc[-1, :] = df_temp.iloc[-1, :].shift(1) # The last row appears shifted to the left... correct that manually
+df_temp.drop(columns=0, inplace=True) # And now drop the first column, which is all Nan
+df_temp.columns = estacions_s2s6[::-1]
+df_temp = helpers.generate_hours(df_temp, h_values)
+df_temp = helpers.fix_time_discontinuity(df_temp)
+s2s6_tornada_feiners.append(helpers.filter_interval(df_temp, "19:28", "21:16"))
+
+#part 7
+partindex = 6
+schedule = tabula.read_pdf(url, pages=2, stream=True, lattice=True, multiple_tables=False, guess=False, area=area_s2s6_tornada_feiners[partindex], pandas_options={'header': None})
+schedule[0].drop(columns=0, inplace=True)
+schedule[0].columns = estacions_s2s6[::-1]
+s2s6_tornada_feiners.append(helpers.cleanup_trainschedule(schedule[0]))
+
+#part 8 (Last trains, only Fridays and weekdays before public holidays)
+partindex = 7
+schedule = tabula.read_pdf(url, pages=2, stream=True, lattice=True, multiple_tables=False, guess=False, area=area_s2s6_tornada_feiners[partindex], pandas_options={'header': None})
+schedule[0].drop(columns=0, inplace=True)
+schedule[0].columns = estacions_s2s6[::-1]
+#s2s6_tornada_feiners.append(cleanup_trainschedule(schedule[0]))
+
+# Merge all the parts
+s2s6_tornada_feiners = pd.concat(s2s6_tornada_feiners, axis=0)
+s2s6_tornada_feiners.reset_index(drop=True, inplace=True)
+del schedule, url, h_values
+
+
+## End of extraction from pdf with tabula
+
+## Getting specific services within a line (e.g. R2 Nord, S2, etc.)
+
 # Line R2 is divided between R2 North, R2 and R2 South. However, this is not consistent and some trains overlap these lines.
 # Separates the R2 line into north, central and south portions
 def get_r2_nordcentresud(df):
@@ -293,6 +476,21 @@ s3_tornada_feiners, s8_tornada_feiners, s9_tornada_feiners= get_s3_s8_s9_service
 # Merge the 3 lines into one, as we we'll display them as one line in the line view
 s3s8s9_anada_feiners = pd.concat([s3_anada_feiners, s8_anada_feiners, s9_anada_feiners])
 s3s8s9_tornada_feiners = pd.concat([s3_tornada_feiners, s8_tornada_feiners, s9_tornada_feiners])
+
+# Gets lines S2 and S6 (Universitat Autonoma & Sabadell)
+def get_s2_s6_services(df):
+    #S6 (Ends at Universitat Autonoma, Stops at Sant Gervasi)
+    df_s6  = df.copy()
+    df_s6 = df_s6.dropna(subset=['Sant Gervasi'], how='all') # Only R5 stops there.
+    
+    #S2 (Goes until Sabadell Parc del Nord, the last stop)
+    df_s2  = df.copy()
+    df_s2 = df_s2.dropna(subset=['Sabadell Parc del Nord'], how='all') # Only R5 stops there.
+
+    return df_s2, df_s6
+
+s2_anada_feiners, s6_anada_feiners = get_s2_s6_services(s2s6_anada_feiners)
+s2_tornada_feiners, s6_tornada_feiners = get_s2_s6_services(s2s6_tornada_feiners)
 
 
 print("...done")
@@ -420,6 +618,21 @@ def generate_data():
                     "trainLine": "Rodalies R8",
                     "positions1": helpers.find_alltrains(r8_anada, bcn_time),
                     "positions2": helpers.find_alltrains(r8_tornada, bcn_time, inverse=True),
+                },
+                {
+                    "trainLine": "Rodalies S2 S6",
+                    "positions1": helpers.find_alltrains(s2s6_anada_feiners, bcn_time),
+                    "positions2": helpers.find_alltrains(s2s6_tornada_feiners, bcn_time, inverse=True),
+                },
+                {
+                    "trainLine": "Rodalies S2",
+                    "positions1": helpers.find_alltrains(s2_anada_feiners, bcn_time),
+                    "positions2": helpers.find_alltrains(s2_tornada_feiners, bcn_time, inverse=True),
+                },
+                {
+                    "trainLine": "Rodalies S6",
+                    "positions1": helpers.find_alltrains(s6_anada_feiners, bcn_time),
+                    "positions2": helpers.find_alltrains(s6_tornada_feiners, bcn_time, inverse=True),
                 }
             ]
             print(data)
