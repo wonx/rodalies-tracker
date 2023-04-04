@@ -1,7 +1,7 @@
 # Import Required Modules
 from flask import Flask, render_template, Response, stream_with_context
 import pandas as pd
-import helpers
+import helpers, gtfsdata , tabuladata
 import tabula
 from datetime import datetime
 import time
@@ -9,35 +9,23 @@ import pytz
 import json
 import numpy as np
 
-estacions_r1=("L'Hospitalet de Llobregat", "Barcelona - Sants", "Barcelona - Plaça de Catalunya", "Barcelona - Arc de Triomf", "Barcelona - El Clot Aragó", "St. Adrià de Besòs", "Badalona", "Montgat", "Montgat Nord", "El Masnou", "Ocata", "Premià de Mar", "Vilassar de Mar", "Cabrera de Mar-Vilassar de Mar", "Mataró", "St. Andreu de Llavaneres", "Caldes d'Estrac", "Arenys de Mar", "Canet de Mar", "St. Pol de Mar","Calella","Pineda de Mar","Santa Susanna","Malgrat de Mar","Blanes","Tordera","Maçanet-Massanes")
-estacions_r2=("Maçanet-Massanes", "Hostalric", "Riells i Viabrea-Breda", "Gualba", "Sant Celoni", "Palautordera", "Llinars del Vallès", "Cardedeu", "Les Franqueses del Vallès-Granollers Nord", "Granollers Centre", "Montmeló", "Mollet-Sant Fost", "La Llagosta", "Montcada i Reixac", "Barcelona - Sant Andreu", "Barcelona-El Clot-Aragó", "Barcelona - Estació de França", "Barcelona-Passeig de Gràcia", "Barcelona-Sants", "Bellvitge", "El Prat de Llobregat", "Aeroport", "Viladecans", "Gavà", "Castelldefels", "Platja de Castelldefels", "Garraf", "Sitges", "Vilanova i la Geltrú", "Cubelles", "Cunit", "Segur de Calafell", "Calafell", "Sant Vicenç de Calders")
-estacions_r3=("L'Hospitalet de Llobregat", "Barcelona-Sants", "Barcelona-Plaça Catalunya", "Barcelona-Arc de Triomf", "Barcelona-La Sagrera-Meridiana", "Sant Andreu Arenal", "Torre del Baró-Vallbona", "Montcada Bifurcació", "Montcada Ripollet", "Santa Perpètua de Mogoda-La Florida", "Mollet-Santa Rosa", "Parets del Vallès", "Granollers-Canovelles", "Les Franqueses del Vallès", "La Garriga", "Figaró", "Sant Martí de Centelles", "Centelles", "Balenyà-Els Hostalets", "Balenyà-Tona-Seva", "Vic", "Manlleu", "Torelló", "Borgonyà", "Sant Quirze de Besora", "La Farga de Bebié", "Ripoll", "Campdevànol", "Ribes de Freser", "Planoles", "Toses", "La Molina", "Urtx-Alp", "Puigcerdà","Latour-de-Carol-Enveig")
-estacions_r4=("St. Vicenç de Calders", "El Vendrell", "L'Arboç", "Els Monjos", "Vilafranca del Penedès", "La Granada", "Lavern-Subirats", "St. Sadurní d'Anoia", "Gelida", "Martorell", "Castellbisbal", "El Papiol","Molins de Rei","St. Feliu de Llobregat","St. Joan Despí","Cornellà","L'Hospitalet de Llobregat","Barcelona Sants","Barcelona Plaça de Catalunya","Barcelona Arc de Triomf","Barcelona La Sagrera-Meridiana","Barcelona St.Andreu Arenal","Barcelona Torre del Baró","Montcada Bifurcació","Montcada i Reixac-Manresa","Montcada i Reixac-Sta. Maria","Cerdanyola del Vallès","Barberà del Vallès","Sabadell Sud","Sabadell Centre","Sabadell Nord","Terrassa Est" ,"Terrassa" ,"St. Miquel de Gonteres" ,"Viladecavalls" ,"Vacarisses-Torreblanca" ,"Vacarisses" ,"Castellbell i el Vilar-Monistrol de Montserrat" ,"St. Vicenç de Castellet" ,"Manresa")
 estacions_r5=["Plaça Espanya", "Magòria-La Campana", "Ildefons Cerdà", "Europa | Fira", "Gornal", "Sant Josep", "L’Hospitalet-Av. Carrilet", "Almeda", "Cornellà Riera", "Sant Boi", "Molí Nou-Ciutat Cooperativa", "Colònia Güell", "Santa Coloma de Cervelló", "Sant Vicenç dels Horts", "Can Ros", "Quatre Camins", "Pallejà", "Sant Andreu de la Barca", "El Palau", "Martorell Vila | Castellbisbal", "Martorell Central", "Martorell Enllaç", "Abrera", "Olesa de Montserrat", "Aeri de Montserrat", "Monistrol de Montserrat", "Castellbell i el Vilar", "Sant Vicenç | CastellGalí", "Manresa-Viladordis", "Manresa-Alta", "Manresa-Baixador"]
-estacions_r6=['Plaça Espanya', 'Magòria-La Campana', 'Ildefons Cerdà', 'Europa | Fira', 'Gornal', 'Sant Josep', 'L’Hospitalet-Av. Carrilet', 'Almeda', 'Cornellà Riera', 'Sant Boi', 'Molí Nou-Ciutat Cooperativa', 'Colònia Güell', 'Santa Coloma de Cervelló', 'Sant Vicenç dels Horts', 'Can Ros', 'Quatre Camins', 'Pallejà', 'Sant Andreu de la Barca', 'El Palau', 'Martorell Vila | Castellbisbal', 'Martorell Central', 'Martorell Enllaç', 'Sant Esteve Sesrovires', 'La Beguda', 'Can Parellada', 'Masquefa', 'Piera', 'Vallbona d’Anoia', 'Capellades', 'La Pobla de Claramunt', 'Vilanova del Camí', 'Igualada']
-estacions_r7=('Barcelona St. Andreu Arenal','Barcelona Torre del Baró','Montcada Bifurcació','Montcada i Reixac-Manresa','Montcada i Reixac-Sta. Maria', 'Cerdanyola del Vallès','Cerdanyola Universitat')
-estacions_r8=('Martorell', 'Castellbisbal', 'Rubí', 'Sant Cugat del Vallès', 'Cerdanyola Universitat', 'Santa Perpètua de Mogoda - Riera de caldes', 'Mollet - Sant Fost', 'Montmeló', 'Granollers Centre')
 estacions_s2s6=['Barcelona - Pl. Catalunya', 'Provença', 'Gràcia', 'Sant Gervasi', 'Muntaner', 'La Bonanova', 'Les Tres Torres', 'Sarrià', 'Peu del Funicular', 'Baixador de Vallvidrera', 'Les Planes', 'La Floresta', 'Valldoreix', 'Sant Cugat', 'Volpelleres', 'Sant Joan', 'Bellaterra', 'Universitat Autònoma', 'Sant Quirze', 'Can Feu | Gràcia', 'Sabadell Plaça Major', 'La Creu Alta', 'Sabadell Nord', 'Sabadell Parc del Nord']
 estacions_s1s5s7=['Barcelona - Pl. Catalunya', 'Provença', 'Gràcia', 'Sant Gervasi', 'Muntaner', 'La Bonanova', 'Les Tres Torres', 'Sarrià', 'Peu del Funicular', 'Baixador de Vallvidrera', 'Les Planes', 'La Floresta', 'Valldoreix', 'Sant Cugat', 'Mira-sol', 'Hospital General', 'Rubí', 'Les Fonts', 'Terrassa Rambla', 'Vallparadís Universitat', 'Terrassa Estació del Nord', 'Terrassa Nacions Unides']
 
-area_r1_anada_feiners = (605, 10, 2360, 950)
-area_r1_tornada_feiners = (605, 10, 2370, 950)
-area_r2_anada_feiners = (630, 10, 2450, 955)
-area_r2_tornada_feiners = (630, 10, 2450, 955)
-area_r3_anada_feiners = (555, 10, 1500, 960)
-area_r3_tornada_feiners = (557, 10, 1450, 960)
-area_r4_anada_feiners = (576, 10, 2320, 965)
-area_r4_tornada_feiners = (576, 10, 2320, 965)
-area_r5_anada_feiners = (500, 10, 850, 965)
-area_r5_tornada_feiners = (900, 10, 2320, 965)
-area_r6_anada_feiners = (500, 35, 750, 595)
-area_r6_tornada_feiners = (825, 35, 2000, 595)
+# Test (getting route from gtfs)
+route = "R1"
+data_cer = gtfsdata.update_dataset("cercanias")
+df = gtfsdata.get_schedule_cercanias(data_cer, route, 20230405)
+#for schedule in df:
+#    print(schedule)
+
+#r1_anada_feiners = df[0]
+#r1_tornada_feiners = df[1]
+
+
 area_s3s4s8s9_anada_feiners = (380, 30, 1320, 700)
 area_s3s4s8s9_tornada_feiners = (1385, 30, 2340, 700)
-area_r7_anada = (620, 140, 1650, 800)
-area_r7_tornada = (620, 140, 1600, 800)
-area_r8_anada = (468, 10, 1300, 950)
-area_r8_tornada = (1625, 10, 2300, 950)
 area_s2s6_anada_feiners = [(410, 40, 600, 700), # 1st
                            (600, 40, 630, 700), # 2nd (just 4 rows). Includes just the minutes. Will need to be repeated from 10 to 12.
                            (630, 35, 700, 700), # 3rd
@@ -55,47 +43,32 @@ area_s2s6_tornada_feiners = [(440, 40, 610, 700), # 1st (normal part, 5:01 to 9:
                              (920, 30, 950, 690), # 7th (normal part again, 4 rows)
                              (955, 30, 975, 690)] # 8th (normal part, but only fridays and weekdays before holidays)
 
+# Getting schedules from PDF timetables
 print("Getting train schedules...")
+r1_anada_feiners = tabuladata.get_tabula_schedule("R1", tornada=False)
+r1_tornada_feiners = tabuladata.get_tabula_schedule("R1", tornada=True)
 
-# R1 (L'Hospitalet - Maçanet)
-url = "https://rodalies.gencat.cat/web/.content/02_Horaris/horaris/R1.pdf"
-url = "static/horarispdf/R1.pdf"
-schedule = tabula.read_pdf(url, pages=1, stream=True, lattice=False, multiple_tables=True, area=area_r1_anada_feiners)
-schedule[0].columns = estacions_r1
-r1_anada_feiners = helpers.cleanup_trainschedule(schedule[0])
+r2_anada_feiners = tabuladata.get_tabula_schedule("R2", tornada=False)
+r2_tornada_feiners = tabuladata.get_tabula_schedule("R2", tornada=True)
 
-# R1 (Maçanet - L'Hospitalet)
-url = "https://rodalies.gencat.cat/web/.content/02_Horaris/horaris/R1.pdf"
-url = "static/horarispdf/R1.pdf"
-schedule = tabula.read_pdf(url, pages=2, stream=True, lattice=False, multiple_tables=True, area=area_r1_tornada_feiners)
-schedule[0].columns = estacions_r1[::-1]
-r1_tornada_feiners = helpers.cleanup_trainschedule(schedule[0])
+r3_anada_feiners = tabuladata.get_tabula_schedule("R3", tornada=False)
+r3_tornada_feiners = tabuladata.get_tabula_schedule("R3", tornada=True)
+                                            
+r4_anada_feiners = tabuladata.get_tabula_schedule("R4", tornada=False)
+r4_tornada_feiners = tabuladata.get_tabula_schedule("R4", tornada=True)
 
-# R5 (Pl España - Manresa)
-url = "static/horarispdf/R5_Manresa_220x450_LA_octubre_20.pdf"
-schedule = tabula.read_pdf(url, pages=1, stream=True, lattice=True, multiple_tables=False, guess=False, area=area_r5_anada_feiners, pandas_options={'header': None})
-schedule[0].columns = estacions_r5
-r5_anada_feiners = helpers.cleanup_trainschedule(schedule[0])
+r5_anada_feiners = tabuladata.get_tabula_schedule("R5", tornada=False)
+r5_tornada_feiners = tabuladata.get_tabula_schedule("R5", tornada=True)
 
-# R5 (Manresa - Pl Espanya)
-url = "static/horarispdf/R5_Manresa_220x450_LA_octubre_20.pdf"
-schedule = tabula.read_pdf(url, pages=1, stream=True, lattice=True, multiple_tables=False, guess=False, area=area_r5_tornada_feiners, pandas_options={'header': None})
-schedule[0].columns = estacions_r5[::-1]
-r5_tornada_feiners = helpers.cleanup_trainschedule(schedule[0])
+r6_anada_feiners = tabuladata.get_tabula_schedule("R6", tornada=False)
+r6_tornada_feiners = tabuladata.get_tabula_schedule("R6", tornada=True)
 
-# R6 (Pl España - Igualada)
-url = "static/horarispdf/R6_Igualada_LA_octubre_20.pdf"
-schedule = tabula.read_pdf(url, pages=1, stream=True, lattice=False, multiple_tables=False, guess=False, area=area_r6_anada_feiners)
-schedule[0] = schedule[0].drop(['Unnamed: 11', 'Unnamed: 12', 'Unnamed: 14', 'Unnamed: 23', 'Unnamed: 24'], axis=1) # empty columns that were read incorrectly
-schedule[0].columns = estacions_r6
-r6_anada_feiners = helpers.cleanup_trainschedule(schedule[0])
+r7_anada_feiners = tabuladata.get_tabula_schedule("R7", tornada=False)
+r7_tornada_feiners = tabuladata.get_tabula_schedule("R7", tornada=True)
 
-# R6 (Igualada - Pl Espanya)
-url = "static/horarispdf/R6_Igualada_LA_octubre_20.pdf"
-schedule = tabula.read_pdf(url, pages=1, stream=True, lattice=False, multiple_tables=False, guess=False, area=area_r6_tornada_feiners)
-schedule[0] = schedule[0].drop(['Unnamed: 13', 'Unnamed: 22'], axis=1) # empty columns that were read incorrectly
-schedule[0].columns = estacions_r6[::-1]
-r6_tornada_feiners = helpers.cleanup_trainschedule(schedule[0])
+r8_anada_feiners = tabuladata.get_tabula_schedule("R8", tornada=False)
+r8_tornada_feiners = tabuladata.get_tabula_schedule("R8", tornada=True)
+
 
 # S3, S4, S8 and S9 (Pl España - Martorell Enllaç)
 url = "static/horarispdf/S8_Martorell_LA_octubre_20.pdf"
@@ -111,87 +84,6 @@ estacions_s3s4s8s9 = estacions_r5[:22] # First 22 stations of R4
 estacions_s3s4s8s9 = estacions_s3s4s8s9[::-1]
 schedule[0].columns = estacions_s3s4s8s9
 s3s4s8s9_tornada_feiners = helpers.cleanup_trainschedule(schedule[0])
-
-# R7 (Bcn St Andreu-Cerdanyola Universitat)
-url = "https://rodalies.gencat.cat/web/.content/02_Horaris/horaris/R7.pdf"
-url = "static/horarispdf/R7.pdf"
-schedule = tabula.read_pdf(url, pages=1, stream=True, lattice=False, multiple_tables=True, area=area_r7_anada)
-schedule[0].columns = estacions_r7
-r7_anada = helpers.cleanup_trainschedule(schedule[0])
-
-# R7 (Cerdanyola Universitat - Bcn St Andreu)
-url = "https://rodalies.gencat.cat/web/.content/02_Horaris/horaris/R7.pdf"
-url = "static/horarispdf/R7.pdf"
-schedule = tabula.read_pdf(url, pages=2, stream=True, lattice=False, multiple_tables=True, area=area_r7_tornada)
-schedule[0].columns = estacions_r7[::-1]
-r7_tornada = helpers.cleanup_trainschedule(schedule[0])
-
-# R8 (Martorell-Granollers)
-url = "https://rodalies.gencat.cat/web/.content/02_Horaris/horaris/R8.pdf"
-url = "static/horarispdf/R8.pdf"
-schedule = tabula.read_pdf(url, pages=1, stream=True, lattice=False, multiple_tables=True, area=area_r8_anada)
-schedule[0].columns = estacions_r8
-r8_anada = helpers.cleanup_trainschedule(schedule[0])
-
-# R8 (Granollers-Martorell)
-url = "https://rodalies.gencat.cat/web/.content/02_Horaris/horaris/R8.pdf"
-url = "static/horarispdf/R8.pdf"
-schedule = tabula.read_pdf(url, pages=1, stream=True, lattice=False, multiple_tables=True, area=area_r8_tornada)
-schedule[0].columns = estacions_r8[::-1]
-r8_tornada = helpers.cleanup_trainschedule(schedule[0])
-
-# R2 (Maçanet - St. Vicenç de Calders)
-url = "https://rodalies.gencat.cat/web/.content/02_Horaris/horaris/R2.pdf"
-url = "static/horarispdf/R2.pdf"
-schedule = tabula.read_pdf(url, pages=1, stream=True, lattice=False, multiple_tables=True, area=area_r2_anada_feiners)
-schedule[0].columns = estacions_r2
-r2_anada_feiners = helpers.cleanup_trainschedule(schedule[0])
-
-# R2 (St. Vicenç de Calders - Maçanet)
-url = "https://rodalies.gencat.cat/web/.content/02_Horaris/horaris/R2.pdf"
-url = "static/horarispdf/R2.pdf"
-schedule = tabula.read_pdf(url, pages=2, stream=True, lattice=False, multiple_tables=True, area=area_r2_tornada_feiners)
-schedule[0].columns = estacions_r2[::-1]
-r2_tornada_feiners = helpers.cleanup_trainschedule(schedule[0])
-
-# R3 (Hospitalet-Vic)
-url = "https://rodalies.gencat.cat/web/.content/02_Horaris/horaris/R3.pdf"
-url = "static/horarispdf/R3.pdf"
-schedule = tabula.read_pdf(url, pages=1, stream=True, lattice=False, multiple_tables=True, area=area_r3_anada_feiners)
-schedule[0].columns = estacions_r3
-r3_anada = helpers.cleanup_trainschedule(schedule[0])
-
-# R3 (Vic-Hospitalet)
-url = "https://rodalies.gencat.cat/web/.content/02_Horaris/horaris/R3.pdf"
-url = "static/horarispdf/R3.pdf"
-schedule = tabula.read_pdf(url, pages=2, stream=True, lattice=False, multiple_tables=True, area=area_r3_tornada_feiners)
-schedule[0].columns = estacions_r3[::-1]
-r3_tornada = helpers.cleanup_trainschedule(schedule[0])
-
-# R4 (St. Vicenç de Calders - Manresa)
-url = "https://rodalies.gencat.cat/web/.content/02_Horaris/horaris/R4.pdf"
-url = "static/horarispdf/R4.pdf"
-schedule = tabula.read_pdf(url, pages=1, stream=True, lattice=True, multiple_tables=False, guess=False, area=area_r4_anada_feiners)
-schedule[0] = schedule[0].iloc[:, : len(estacions_r4)]
-schedule[0] = schedule[0].replace(">>> Cerdanyola Universitat", np.NaN) # Esborrar les celes amb aquest string
-schedule[0].columns = estacions_r4
-## Els valors de Molins de Rei (columna 12) a la fila 1 s'han fusionat. Moure totes les files un pas a la dreta, i després separar aquella cela en particular.
-schedule[0].iloc[1, 12:] = schedule[0].iloc[1, 12:].shift(periods=1)
-#el valor de (1,"Molins de Rei") s'ha de dividir entre (1,"Molins de Rei" i 1,"St. Feliu de Llobregat")
-cell_value = schedule[0].at[1, "St. Feliu de Llobregat"]
-sliced_value1 = cell_value[:4]
-sliced_value2 = cell_value[4:]
-schedule[0].at[1, "Molins de Rei"] = sliced_value1
-schedule[0].at[1, "St. Feliu de Llobregat"] = sliced_value2
-r4_anada_feiners = helpers.cleanup_trainschedule(schedule[0])
-
-# R4 (Manresa - St Vicenç de Calders)
-url = "https://rodalies.gencat.cat/web/.content/02_Horaris/horaris/R4.pdf"
-url = "static/horarispdf/R4.pdf"
-schedule = tabula.read_pdf(url, pages=2, stream=True, lattice=True, multiple_tables=False, guess=False, area=area_r4_tornada_feiners)
-schedule[0] = schedule[0].iloc[:, : len(estacions_r4)]
-schedule[0].columns = estacions_r4
-r4_tornada_feiners = helpers.cleanup_trainschedule(schedule[0])
 
 
 # S2, and S6 (Pl. Catalunya - Universitat Autònoma/Sabadell)
@@ -546,8 +438,8 @@ def generate_data():
                 },
                 {
                     "trainLine": "Rodalies R3",
-                    "positions1": helpers.find_alltrains(r3_anada, bcn_time),
-                    "positions2": helpers.find_alltrains(r3_tornada, bcn_time, inverse=True)
+                    "positions1": helpers.find_alltrains(r3_anada_feiners, bcn_time),
+                    "positions2": helpers.find_alltrains(r3_tornada_feiners, bcn_time, inverse=True)
                 },
                 {
                     "trainLine": "Rodalies R4",
@@ -611,13 +503,13 @@ def generate_data():
                 },
                 {
                     "trainLine": "Rodalies R7",
-                    "positions1": helpers.find_alltrains(r7_anada, bcn_time),
-                    "positions2": helpers.find_alltrains(r7_tornada, bcn_time, inverse=True),
+                    "positions1": helpers.find_alltrains(r7_anada_feiners, bcn_time),
+                    "positions2": helpers.find_alltrains(r7_tornada_feiners, bcn_time, inverse=True),
                 },
                 {
                     "trainLine": "Rodalies R8",
-                    "positions1": helpers.find_alltrains(r8_anada, bcn_time),
-                    "positions2": helpers.find_alltrains(r8_tornada, bcn_time, inverse=True),
+                    "positions1": helpers.find_alltrains(r8_anada_feiners, bcn_time),
+                    "positions2": helpers.find_alltrains(r8_tornada_feiners, bcn_time, inverse=True),
                 },
                 {
                     "trainLine": "Rodalies S2 S6",
