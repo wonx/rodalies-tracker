@@ -68,3 +68,27 @@
   transform: translate(8%, -50%); /* the first value (2.5px should be the difference between the width of the .circle and the width of the .train-marker */
 }
 
+/* for the schedule tables */
+body {
+  font-family: Arial, sans-serif;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #f8f8f8;
+}
+table, th, td {
+  border: 1px solid #ddd;
+  text-align: center;
+}
+th {
+  background-color: #408850;
+  color: white;
+  padding: 10px;
+}
+tr:nth-child(even) {
+  background-color: #f0f0f0;
+}
+td {
+  padding: 10px;
+}
