@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Schedules</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: #f8f8f8;
+      }
+      table, th, td {
+        border: 1px solid #ddd;
+        text-align: center;
+      }
+      th {
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px;
+      }
+      tr:nth-child(even) {
+        background-color: #f2f2f2;
+      }
+      td {
+        padding: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Select a dataframe:</h1>
+    <select id="df-select">
+      {% for df in dfs %}
+        <option value="{{ df.name }}">{{ df.name }}</option>
+      {% endfor %}
+    </select>
+
+    <div id="df-table">
+    </div>
+
+    <script>
+      var dfs = {{ dfs | tojson }};
+      var dfSelect = document.getElementById("df-select");
+      var dfTable = document.getElementById("df-table");
+
+      dfSelect.addEventListener("change", function() {
+          var selectedValue = dfSelect.options[dfSelect.selectedIndex].value;
+          var selectedData = dfs.find(df => df.name === selectedValue);
+          var keys = selectedData.columns;
+          var tableHtml = "<table><thead><tr>";
+          keys.forEach(function(key) {
+              tableHtml += "<th>" + key + "</th>";
+          });
+          tableHtml += "</tr></thead><tbody>";
+          selectedData.data.forEach(function(row) {
+              tableHtml += "<tr>";
+              keys.forEach(function(key) {
+                  tableHtml += "<td>" + row[key] + "</td>";
+              });
+              tableHtml += "</tr>";
+          });
+          tableHtml += "</tbody></table>";
+          dfTable.innerHTML = tableHtml;
+      });
+  </script>
+  </body>
+</html>
