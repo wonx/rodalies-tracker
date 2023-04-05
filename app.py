@@ -21,8 +21,10 @@ today = int(today)
 print("Getting train schedules from GTFS data...")
 data_cer = gtfsdata.update_dataset("cercanias")
 r1_anada_feiners, r1_tornada_feiners = gtfsdata.get_schedule_cercanias(data_cer, "R1", today)
+# (R2 here)
 r3_anada_feiners, r3_tornada_feiners = gtfsdata.get_schedule_cercanias(data_cer, "R3", today)
 r4_anada_feiners, r4_tornada_feiners = gtfsdata.get_schedule_cercanias(data_cer, "R4", today)
+#r7_anada_feiners, r7_tornada_feiners = gtfsdata.get_schedule_cercanias(data_cer, "R7", today) # Make sure the stations match before enabling
 r8_anada_feiners, r8_tornada_feiners = gtfsdata.get_schedule_cercanias(data_cer, "R8", today)
 
 data_fgc = gtfsdata.update_dataset("fgc")
@@ -36,6 +38,8 @@ s8_anada_feiners, s8_tornada_feiners = gtfsdata.get_schedule_fgc(data_fgc, "S8",
 s9_anada_feiners, s9_tornada_feiners = gtfsdata.get_schedule_fgc(data_fgc, "S9", today)
 
 s1_anada_feiners, s1_tornada_feiners = gtfsdata.get_schedule_fgc(data_fgc, "S1", today)
+s2_anada_feiners, s2_tornada_feiners = gtfsdata.get_schedule_fgc(data_fgc, "S2", today)
+
 
 
 area_s3s4s8s9_anada_feiners = (380, 30, 1320, 700)
@@ -288,8 +292,8 @@ s3s8s9_tornada_feiners = pd.concat([s3_tornada_feiners, s8_tornada_feiners, s9_t
 
 
 # Gets lines S2 and S6 (Universitat Autonoma & Sabadell)
-s2_anada_feiners, s6_anada_feiners = tabuladata.get_s2_s6_services(s2s6_anada_feiners)
-s2_tornada_feiners, s6_tornada_feiners = tabuladata.get_s2_s6_services(s2s6_tornada_feiners)
+#s2_anada_feiners, s6_anada_feiners = tabuladata.get_s2_s6_services(s2s6_anada_feiners)
+#s2_tornada_feiners, s6_tornada_feiners = tabuladata.get_s2_s6_services(s2s6_tornada_feiners)
 
 
 print("...done")
@@ -341,10 +345,7 @@ def schedules():
         column_order = df.columns.tolist()
 
         # use OrderedDict to preserve the column order
-        #[print(row) for row in df.to_dict('records')]
         data = [OrderedDict(zip(column_order, [row[col] for col in column_order])) for row in df.to_dict('records')]
-
-        print(data)
         dfs_dicts.append({'name': name, 'columns': column_order, 'data': data})
 
     return render_template('schedules.html', dfs=dfs_dicts)
@@ -455,6 +456,16 @@ def generate_data():
                     "trainLine": "Rodalies R8",
                     "positions1": helpers.find_alltrains(r8_anada_feiners, bcn_time),
                     "positions2": helpers.find_alltrains(r8_tornada_feiners, bcn_time, inverse=True),
+                },
+                {
+                    "trainLine": "Rodalies S1",
+                    "positions1": helpers.find_alltrains(s1_anada_feiners, bcn_time),
+                    "positions2": helpers.find_alltrains(s1_tornada_feiners, bcn_time, inverse=True),
+                },
+                {
+                    "trainLine": "Rodalies S2",
+                    "positions1": helpers.find_alltrains(s2_anada_feiners, bcn_time),
+                    "positions2": helpers.find_alltrains(s2_tornada_feiners, bcn_time, inverse=True),
                 }
             ]
             print(data)
