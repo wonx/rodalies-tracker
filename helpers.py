@@ -295,7 +295,7 @@ stations_dict = {
               'Vallbona d’Anoia', 'Capellades', 'La Pobla de Claramunt', 'Vilanova del Camí', 'Igualada'],
        "R7": ["Molins de Rei","St. Feliu de Llobregat","St. Joan Despí","Cornellà","L'Hospitalet de Llobregat",
               "Barcelona Sants","Barcelona Plaça de Catalunya","Barcelona Arc de Triomf","Barcelona La Sagrera-Meridiana",
-              "Barcelona St.Andreu Arenal",'"Torre del Baró-Vallbona"','Montcada Bifurcació','Montcada i Reixac-Manresa',
+              "Barcelona St.Andreu Arenal",'Torre del Baró-Vallbona','Montcada Bifurcació','Montcada i Reixac-Manresa',
               'Montcada i Reixac-Sta. Maria', 'Cerdanyola del Vallès','Cerdanyola Universitat'],
        "R8": ['Martorell', 'Castellbisbal', 'Rubí', 'Sant Cugat del Vallès', 'Cerdanyola Universitat', 
               'Santa Perpètua de Mogoda - Riera de caldes', 'Mollet - Sant Fost', 'Montmeló', 'Granollers Centre'],
