@@ -112,7 +112,7 @@ def deduce_stop_order(lst):
 
     return order
 
-# Sorts a schedule in dataframe format
+# Sorts a schedule in dataframe format vertically (by column)
 def sort_schedule(schedule):
     # find the columns with the fewer nan values
     first_valid_indices = schedule.isna().sum()
@@ -127,7 +127,8 @@ def sort_schedule(schedule):
     return schedule
 
 
-def group_schedules(df): # Groups train schedules from the same route that go in the same direction. Returns list of df
+# Groups train schedules from the same route that go in the same direction. Returns list of df
+def group_schedules(df): 
     print("Grouping train services by route direction...")
     #print("elements in schedule: ", len(df))
 

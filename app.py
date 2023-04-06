@@ -20,7 +20,32 @@ today = int(today)
 # Test (getting routes from gtfs)
 print("Getting train schedules from GTFS data...")
 data_cer = gtfsdata.update_dataset("cercanias")
-r1_anada_feiners, r1_tornada_feiners = gtfsdata.get_schedule_cercanias(data_cer, "R1", today)
+data_fgc = gtfsdata.update_dataset("fgc")
+
+routes = ['R1', 'R3', 'R4', 'R5', 'R50', 'R6', 'R60', 'R7', 'R8', 'S1', 'S2', 'S3', 'S4', 'S8', 'S9']
+schedules_dict = {} # Dict to store all schedules
+for route in routes:
+    if route[:1] == 'S' or route[:2] in ("R5", "R6"):
+        df_anada, df_tornada = gtfsdata.get_schedule_fgc(data_fgc, route, today)
+    else:
+        df_anada, df_tornada = gtfsdata.get_schedule_cercanias(data_cer, route, today)
+    # Standardize the amount of station and their names
+    df_anada = helpers.fix_stationnames(df_anada, route)
+    df_tornada = helpers.fix_stationnames(df_tornada, route)
+    # Check if the columns need reversing
+    df_anada = helpers.check_df_needsreversing(df_anada)
+    df_tornada = helpers.check_df_needsreversing(df_tornada)
+    # Save in the dict
+    schedules_dict.setdefault(route, {})["Anada"] = df_anada
+    schedules_dict.setdefault(route, {})["Tornada"] = df_tornada
+
+del df_anada, df_tornada
+
+print("...done.")
+
+
+""" r1_anada_feiners, r1_tornada_feiners = gtfsdata.get_schedule_cercanias(data_cer, "R1", today)
+r1_anada_feiners, r1_tornada_feiners = helpers.fix_stationnames(r1_anada_feiners, "R1"), helpers.fix_stationnames(r1_tornada_feiners, "R1")
 # (R2 here)
 r3_anada_feiners, r3_tornada_feiners = gtfsdata.get_schedule_cercanias(data_cer, "R3", today)
 r4_anada_feiners, r4_tornada_feiners = gtfsdata.get_schedule_cercanias(data_cer, "R4", today)
@@ -38,7 +63,7 @@ s8_anada_feiners, s8_tornada_feiners = gtfsdata.get_schedule_fgc(data_fgc, "S8",
 s9_anada_feiners, s9_tornada_feiners = gtfsdata.get_schedule_fgc(data_fgc, "S9", today)
 
 s1_anada_feiners, s1_tornada_feiners = gtfsdata.get_schedule_fgc(data_fgc, "S1", today)
-s2_anada_feiners, s2_tornada_feiners = gtfsdata.get_schedule_fgc(data_fgc, "S2", today)
+s2_anada_feiners, s2_tornada_feiners = gtfsdata.get_schedule_fgc(data_fgc, "S2", today) """
 
 
 
@@ -81,8 +106,8 @@ r2_tornada_feiners = tabuladata.get_tabula_schedule("R2", tornada=True)
 #r6_anada_feiners = tabuladata.get_tabula_schedule("R6", tornada=False)
 #r6_tornada_feiners = tabuladata.get_tabula_schedule("R6", tornada=True)
 
-r7_anada_feiners = tabuladata.get_tabula_schedule("R7", tornada=False)
-r7_tornada_feiners = tabuladata.get_tabula_schedule("R7", tornada=True)
+#r7_anada_feiners = tabuladata.get_tabula_schedule("R7", tornada=False)
+#r7_tornada_feiners = tabuladata.get_tabula_schedule("R7", tornada=True)
 
 #r8_anada_feiners = tabuladata.get_tabula_schedule("R8", tornada=False)
 #r8_tornada_feiners = tabuladata.get_tabula_schedule("R8", tornada=True)
@@ -273,13 +298,13 @@ r2_nord_tornada_feiners, r2_centre_tornada_feiners, r2_sud_tornada_feiners = tab
 r2_nord_tornada_feiners, r2_centre_tornada_feiners, r2_sud_tornada_feiners = [df[df.columns[::-1]] for df in [r2_nord_tornada_feiners, r2_centre_tornada_feiners, r2_sud_tornada_feiners]] # Reverse back
 
 # Separating R5 pdf into R5, R50 and S4
-r5_r5_anada_feiners, r5_s4_anada_feiners, r5_r50_anada_feiners = tabuladata.get_r5_services(r5_anada_feiners)
-r5_r5_tornada_feiners, r5_s4_tornada_feiners, r5_r50_tornada_feiners = tabuladata.get_r5_services(r5_tornada_feiners)
+#r5_r5_anada_feiners, r5_s4_anada_feiners, r5_r50_anada_feiners = tabuladata.get_r5_services(r5_anada_feiners)
+#r5_r5_tornada_feiners, r5_s4_tornada_feiners, r5_r50_tornada_feiners = tabuladata.get_r5_services(r5_tornada_feiners)
 
 
 # Separating R6 pdf into R6 & R60
-r6_r6_anada_feiners, r6_r60_anada_feiners, = tabuladata.get_r6_services(r6_anada_feiners)
-r6_r6_tornada_feiners, r6_r60_tornada_feiners = tabuladata.get_r6_services(r6_tornada_feiners)
+#r6_r6_anada_feiners, r6_r60_anada_feiners, = tabuladata.get_r6_services(r6_anada_feiners)
+#r6_r6_tornada_feiners, r6_r60_tornada_feiners = tabuladata.get_r6_services(r6_tornada_feiners)
 
 
 # Get lines S3, S4, S8 and S9. S4 and S8 are identical in the S8_Martorell_LA_octubre_20.pdf file, but S4 goes further. We need to pass the df for S4 that we got from R5_Manresa_220x450_LA_octubre_20.pdf, where the whole S4 line is shown.
@@ -287,8 +312,8 @@ r6_r6_tornada_feiners, r6_r60_tornada_feiners = tabuladata.get_r6_services(r6_to
 #s3_tornada_feiners, s8_tornada_feiners, s9_tornada_feiners= tabuladata.get_s3_s8_s9_services(s3s4s8s9_tornada_feiners, r5_s4_tornada_feiners)
 
 # Merge the 3 lines into one, as we we'll display them as one line in the line view
-s3s8s9_anada_feiners = pd.concat([s3_anada_feiners, s8_anada_feiners, s9_anada_feiners])
-s3s8s9_tornada_feiners = pd.concat([s3_tornada_feiners, s8_tornada_feiners, s9_tornada_feiners])
+#s3s8s9_anada_feiners = pd.concat([s3_anada_feiners, s8_anada_feiners, s9_anada_feiners])
+#s3s8s9_tornada_feiners = pd.concat([s3_tornada_feiners, s8_tornada_feiners, s9_tornada_feiners])
 
 
 # Gets lines S2 and S6 (Universitat Autonoma & Sabadell)
@@ -317,38 +342,17 @@ def map():
 
 @app.route('/schedules')
 def schedules():
+
     from collections import OrderedDict
-    # create a list of dictionary representations of the DataFrames
-    dfs = {'R1 anada': r1_anada_feiners, 'R1 tornada': r1_tornada_feiners,
-           'R2 anada': r2_anada_feiners, 'R2 tornada': r2_tornada_feiners,
-           'R2 Nord anada': r2_nord_anada_feiners, 'R2 Nord tornada': r2_nord_tornada_feiners, 
-           'R2 Centre anada': r2_centre_anada_feiners, 'R2 Centre tornada': r2_centre_tornada_feiners, 
-           'R2 Sud anada': r2_sud_anada_feiners, 'R2 Sud tornada': r2_sud_tornada_feiners, 
-           'R3 anada': r3_anada_feiners, 'R3 tornada': r3_tornada_feiners, 
-           'R4 anada': r4_anada_feiners, 'R4 tornada': r4_tornada_feiners, 
-           'R5 anada': r5_anada_feiners, 'R5 tornada': r5_tornada_feiners, 
-           'R50 anada': r50_anada_feiners, 'R50 tornada': r50_tornada_feiners, 
-           'R6 anada': r6_anada_feiners, 'R6 tornada': r6_tornada_feiners,  
-           'R60 anada': r60_anada_feiners, 'R60 tornada': r60_tornada_feiners, 
-           'R7 anada': r7_anada_feiners, 'R7 tornada': r7_tornada_feiners,
-           'R8 anada': r8_anada_feiners, 'R8 tornada': r8_tornada_feiners,
-           'S1 anada': s1_anada_feiners, 'S1 tornada': s1_tornada_feiners,
-           'S2 anada': s2_anada_feiners, 'S2 tornada': s2_tornada_feiners,
-           'S3 anada': s3_anada_feiners, 'S3 tornada': s3_tornada_feiners,
-           'S4 anada': s4_anada_feiners, 'S4 tornada': s4_tornada_feiners,
-           'S8 anada': s8_anada_feiners, 'S8 tornada': s8_tornada_feiners,
-           'S9 anada': s9_anada_feiners, 'S9 tornada': s9_tornada_feiners}
-    
-    dfs_dicts = []
-    for name, df in dfs.items():
-        # create a list of the column names in the correct order
-        column_order = df.columns.tolist()
+    dfs = []
+    for name, df_dict in schedules_dict.items():
+        for df in df_dict.items():
+            column_order = df[1].columns.tolist()
+            data = [OrderedDict(zip(column_order, [row[col] for col in column_order])) for row in df[1].to_dict('records')]
+            dfs.append({'name': name+" "+df[0], 'columns': column_order, 'data': data})
 
-        # use OrderedDict to preserve the column order
-        data = [OrderedDict(zip(column_order, [row[col] for col in column_order])) for row in df.to_dict('records')]
-        dfs_dicts.append({'name': name, 'columns': column_order, 'data': data})
+    return render_template('schedules.html', dfs=dfs)
 
-    return render_template('schedules.html', dfs=dfs_dicts)
 
 @app.route('/data')
 def generate_data():
@@ -356,7 +360,16 @@ def generate_data():
         bcn_time = datetime.now(tz).strftime("%H:%M:%S") # hora de Barcelona en format hh:mm
         print(bcn_time)
         with app.app_context():
-            data = [
+
+            data = []
+            for route in routes:
+                data.append({
+                    "trainLine": f"Rodalies {route}",
+                    "positions1": helpers.find_alltrains(schedules_dict[route]['Anada'], bcn_time),
+                    "positions2": helpers.find_alltrains(schedules_dict[route]['Tornada'], bcn_time, inverse=True)
+                })
+
+            """ data = [
                 {
                     "trainLine": "Rodalies R1",
                     "positions1": helpers.find_alltrains(r1_anada_feiners, bcn_time),
@@ -467,7 +480,7 @@ def generate_data():
                     "positions1": helpers.find_alltrains(s2_anada_feiners, bcn_time),
                     "positions2": helpers.find_alltrains(s2_tornada_feiners, bcn_time, inverse=True),
                 }
-            ]
+            ] """
             print(data)
             yield f"data: {json.dumps(data)}\n\n"
             time.sleep(1)

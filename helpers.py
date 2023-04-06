@@ -3,7 +3,7 @@ import tabula
 import numpy as np
 import pandas as pd
 
-
+# When importing schedules from PDF files, they might contain invalid characters or other formatting issues, this function does the cleanup.
 def cleanup_trainschedule(df):
     df = df.astype(str)
     df = df.replace('\.', ':', regex=True)
@@ -16,7 +16,7 @@ def cleanup_trainschedule(df):
     #df = df.replace('nan', np.NaN)
     return df
 
-# Definim una funció que converteix una hora en minuts
+# Converts hh:mm or hh:mm:ss to seconds
 def hora_a_minuts(hora):
     h, m = hora.split(":")
     return int(h) * 60 + int(m)
@@ -29,6 +29,7 @@ def hora_a_segons(hora):
         h, m, s = hora.split(":")
     return int(h) * 3600 + int(m) * 60 + int(s)
 
+# Main function that returns the position of a train according to a schedule.
 def busca_estacions(df, hora, row, inverse=False):
     train = df.iloc[row]
 
@@ -89,7 +90,7 @@ def busca_estacions(df, hora, row, inverse=False):
         return (len(train)-1)-((i-j)+routepercent*j)
 
 
-
+# Basically loops through busca_estacions()
 def find_alltrains(df, hora, inverse=False):
 
     # Drop empty columns (stations where no train stops)
@@ -167,7 +168,7 @@ def fix_time_discontinuity(df):
     return df
 
 
-# For those schedules that only show the minutes, add the hours (h_values) (e.g. S2 and S6 schedules)
+# For those schedules that only show the minutes, add the hours (h_values) (e.g. S2 and S6 schedules obtained through tabula)
 def generate_hours(df, h_values): 
     def add_zero(x): # Adds 0 to values, like 12:5 -> 12:50
         return x if x == 'nan' else (x if len(x) == 5 else x + '0')
@@ -218,6 +219,20 @@ def fix_stationnames(df, route):
     return df
 # Usage: 
 # df = fix_stationnames(df, route) 
+
+
+# Check if the columns of a schedule are reversed horizontally, and returns the df in the correct order
+def check_df_needsreversing(df):
+    for row in df.itertuples(index=False):
+        prev_time = None
+        for time in row:
+            if pd.isna(time):
+                continue
+            if prev_time is not None and time < prev_time:
+                return df[df.columns[::-1]]
+            prev_time = time
+    return df
+# Usage: df = check_df_needsreversing(df)
 
 
 # Data imported from gtfs might not include all columns (stops/stations). 
