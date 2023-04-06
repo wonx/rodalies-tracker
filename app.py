@@ -342,15 +342,15 @@ def map():
 
 @app.route('/schedules')
 def schedules():
-
     from collections import OrderedDict
     dfs = []
     for name, df_dict in schedules_dict.items():
-        for df in df_dict.items():
-            column_order = df[1].columns.tolist()
-            data = [OrderedDict(zip(column_order, [row[col] for col in column_order])) for row in df[1].to_dict('records')]
-            dfs.append({'name': name+" "+df[0], 'columns': column_order, 'data': data})
-
+        for df_name, df in df_dict.items():
+            # Fill NaN values with an empty string
+            df = df.fillna('')
+            column_order = df.columns.tolist()
+            data = [OrderedDict(zip(column_order, [row[col] for col in column_order])) for row in df.to_dict('records')]
+            dfs.append({'name': name+" "+df_name, 'columns': column_order, 'data': data})
     return render_template('schedules.html', dfs=dfs)
 
 
