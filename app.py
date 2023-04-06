@@ -75,11 +75,11 @@ r2_tornada_feiners = tabuladata.get_tabula_schedule("R2", tornada=True)
 #r4_anada_feiners = tabuladata.get_tabula_schedule("R4", tornada=False)
 #r4_tornada_feiners = tabuladata.get_tabula_schedule("R4", tornada=True)
 
-r5_anada_feiners = tabuladata.get_tabula_schedule("R5", tornada=False)
-r5_tornada_feiners = tabuladata.get_tabula_schedule("R5", tornada=True)
+#r5_anada_feiners = tabuladata.get_tabula_schedule("R5", tornada=False)
+#r5_tornada_feiners = tabuladata.get_tabula_schedule("R5", tornada=True)
 
-r6_anada_feiners = tabuladata.get_tabula_schedule("R6", tornada=False)
-r6_tornada_feiners = tabuladata.get_tabula_schedule("R6", tornada=True)
+#r6_anada_feiners = tabuladata.get_tabula_schedule("R6", tornada=False)
+#r6_tornada_feiners = tabuladata.get_tabula_schedule("R6", tornada=True)
 
 r7_anada_feiners = tabuladata.get_tabula_schedule("R7", tornada=False)
 r7_tornada_feiners = tabuladata.get_tabula_schedule("R7", tornada=True)

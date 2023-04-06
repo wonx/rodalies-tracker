@@ -279,7 +279,7 @@ def get_schedule_cercanias(dataset, route, date):
 
     # Remove unnecessary elements from the station name
     for key, value in stop_dict.items():
-            stop_dict[key] = value.replace(' (apd)', '').replace(' (apt)', '').replace('Estación de tren ', '')
+            stop_dict[key] = value.replace(' (apd)', '').replace(' (apt)', '').replace('Estación de tren ', '').replace('Apeadero', '')
 
     route_ids = {i for i in routes_dict if routes_dict[i]==route} # Will return a set of the route codes. Usually two (go and back)
 
