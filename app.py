@@ -1,5 +1,6 @@
 # Import Required Modules
 from flask import Flask, render_template, Response, stream_with_context
+from apscheduler.schedulers.background import BackgroundScheduler
 import pandas as pd
 import helpers, gtfsdata, tabuladata
 import tabula
@@ -18,34 +19,49 @@ today = datetime.today().strftime('%Y%m%d')
 today = int(today)
 
 # Test (getting routes from gtfs)
-print("Getting train schedules from GTFS data...")
-data_cer = gtfsdata.update_dataset("cercanias")
-data_fgc = gtfsdata.update_dataset("fgc")
+def refresh_datasets():
+    global data_cer
+    global data_fgc
+    print("Getting train schedules from GTFS data...")
+    data_cer = gtfsdata.update_dataset("cercanias")
+    data_fgc = gtfsdata.update_dataset("fgc")
+    return data_cer, data_fgc
+
+refresh_datasets()
 
 routes = ['R1', 'R3', 'R4', 'R5', 'R50', 'R6', 'R60', 'R7', 'R8', 'S1', 'S2', 'S3', 'S4', 'S8', 'S9']
-schedules_dict = {} # Dict to store all schedules
-for route in routes:
-    print("Processing route", route)
-    if route[:1] == 'S' or route[:2] in ("R5", "R6"):
-        df_anada, df_tornada = gtfsdata.get_schedule_fgc(data_fgc, route, today)
-    else:
-        df_anada, df_tornada = gtfsdata.get_schedule_cercanias(data_cer, route, today)
-    # Standardize the amount of station and their names
-    df_anada = helpers.fix_stationnames(df_anada, route)
-    df_tornada = helpers.fix_stationnames(df_tornada, route)
-    # Check if the columns need reversing
-    df_anada = helpers.check_df_needsreversing(df_anada)
-    df_tornada = helpers.check_df_needsreversing(df_tornada)
-    # Make sure the "Anada" matches the same direction on the train line
-    if df_tornada.columns[0] == helpers.stations_dict[route][0]:
-        print("Exchanging inbound and outbound trains dataframes")
-        df_anada, df_tornada = df_tornada, df_anada
 
-    # Save in the dict
-    schedules_dict.setdefault(route, {})["Anada"] = df_anada
-    schedules_dict.setdefault(route, {})["Tornada"] = df_tornada
+def refresh_schedules():
+    today = datetime.today().strftime('%Y%m%d')
+    today = int(today)
+    print(f"Refreshing schedules for {today}...")
+    global schedules_dict
+    schedules_dict = {} # Dict to store all schedules
+    for route in routes:
+        print("Processing route", route)
+        if route[:1] == 'S' or route[:2] in ("R5", "R6"):
+            df_anada, df_tornada = gtfsdata.get_schedule_fgc(data_fgc, route, today)
+        else:
+            df_anada, df_tornada = gtfsdata.get_schedule_cercanias(data_cer, route, today)
+        # Standardize the amount of station and their names
+        df_anada = helpers.fix_stationnames(df_anada, route)
+        df_tornada = helpers.fix_stationnames(df_tornada, route)
+        # Check if the columns need reversing
+        df_anada = helpers.check_df_needsreversing(df_anada)
+        df_tornada = helpers.check_df_needsreversing(df_tornada)
+        # Make sure the "Anada" matches the same direction on the train line
+        if df_tornada.columns[0] == helpers.stations_dict[route][0]:
+            print("Exchanging inbound and outbound trains dataframes")
+            df_anada, df_tornada = df_tornada, df_anada
 
-del df_anada, df_tornada
+        # Save in the dict
+        schedules_dict.setdefault(route, {})["Anada"] = df_anada
+        schedules_dict.setdefault(route, {})["Tornada"] = df_tornada
+
+    print("...done.")
+    return schedules_dict
+
+refresh_schedules()
 
 print("...done.")
 
@@ -337,6 +353,14 @@ tz = pytz.timezone('Europe/Madrid') # zona horària de Madrid
 
 # Create Home Page Route
 app = Flask(__name__)
+
+
+# Start scheduled task 
+scheduler = BackgroundScheduler()
+scheduler.add_job(refresh_datasets, 'interval', days=7)
+scheduler.add_job(refresh_schedules, 'cron', hour=3)
+
+scheduler.start()
 
 @app.route('/')
 def index():
