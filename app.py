@@ -25,6 +25,7 @@ data_fgc = gtfsdata.update_dataset("fgc")
 routes = ['R1', 'R3', 'R4', 'R5', 'R50', 'R6', 'R60', 'R7', 'R8', 'S1', 'S2', 'S3', 'S4', 'S8', 'S9']
 schedules_dict = {} # Dict to store all schedules
 for route in routes:
+    print("Processing route", route)
     if route[:1] == 'S' or route[:2] in ("R5", "R6"):
         df_anada, df_tornada = gtfsdata.get_schedule_fgc(data_fgc, route, today)
     else:
@@ -35,6 +36,11 @@ for route in routes:
     # Check if the columns need reversing
     df_anada = helpers.check_df_needsreversing(df_anada)
     df_tornada = helpers.check_df_needsreversing(df_tornada)
+    # Make sure the "Anada" matches the same direction on the train line
+    if df_tornada.columns[0] == helpers.stations_dict[route][0]:
+        print("Exchanging inbound and outbound trains dataframes")
+        df_anada, df_tornada = df_tornada, df_anada
+
     # Save in the dict
     schedules_dict.setdefault(route, {})["Anada"] = df_anada
     schedules_dict.setdefault(route, {})["Tornada"] = df_tornada
@@ -344,13 +350,13 @@ def map():
 def schedules():
     from collections import OrderedDict
     dfs = []
-    for name, df_dict in schedules_dict.items():
-        for df_name, df in df_dict.items():
-            # Fill NaN values with an empty string
+    for route, df_dict in schedules_dict.items():
+        for direction, df in df_dict.items():
+            # Replace NaN values with an empty string
             df = df.fillna('')
             column_order = df.columns.tolist()
             data = [OrderedDict(zip(column_order, [row[col] for col in column_order])) for row in df.to_dict('records')]
-            dfs.append({'name': name+" "+df_name, 'columns': column_order, 'data': data})
+            dfs.append({'name': route+" "+direction, 'columns': column_order, 'data': data})
     return render_template('schedules.html', dfs=dfs)
 
 
