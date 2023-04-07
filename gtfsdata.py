@@ -236,6 +236,11 @@ def get_schedule_fgc(dataset, route, date):
     
     # For each service in that day, get the trips for the route we want
     df_service = df_route[df_route['service_id'].isin(services)]
+    print(f"Services relevant to route {route} on {date}: {df_service['service_id'].unique()}")
+    if len(df_service['service_id'].unique()) == 0: # If there are no services for that route that day
+        print("No service for that route, returning empty dataframe")
+        return [pd.DataFrame(), pd.DataFrame()]
+
 
     # For each destination/direction of the train (shape_id) in a service 
     destinations = df_service['shape_id'].unique()
@@ -295,6 +300,9 @@ def get_schedule_cercanias(dataset, route, date):
     # For each service in that day, get the trips for the route we want
     df_service = df_route[df_route['service_id'].isin(services)]
     print(f"Services relevant to route {route} on {date}: {df_service['service_id'].unique()}")
+    if len(df_service['service_id'].unique()) == 0: # If there are no services for that route that day
+        print("No service for that route, returning empty dataframe")
+        return [pd.DataFrame(), pd.DataFrame()]
 
     # If there are no services for that day and route, return empty list
     if len(df_service['service_id'].unique()) == 0: return []
