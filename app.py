@@ -63,7 +63,53 @@ def refresh_schedules():
 
 refresh_schedules()
 
-print("...done.")
+# Line R2 is a completely different story that must be pre-processed in a different way
+def prepare_r2(): 
+    print("Processing line R2...")
+    global schedules_dict
+    today = datetime.today().strftime('%Y%m%d')
+    today = int(today)
+    routes = ['R2N', 'R2', 'R2S']
+    for route in routes:
+        df_anada, df_tornada = gtfsdata.get_schedule_cercanias(data_cer, route, today)
+        # Standardize the amount of station and their names
+        df_anada = helpers.fix_stationnames(df_anada, 'R2')
+        df_tornada = helpers.fix_stationnames(df_tornada, 'R2')
+        df_anada = helpers.check_df_needsreversing(df_anada)
+        df_tornada = helpers.check_df_needsreversing(df_tornada)
+        if df_tornada.columns[0] == helpers.stations_dict[route][0]:
+            print("Exchanging inbound and outbound trains dataframes")
+            df_anada, df_tornada = df_tornada, df_anada
+            print(f"Primera estació d'anada de la {route}: {df_anada.columns[0]}")
+        # Save in the dict
+        schedules_dict.setdefault(route, {})["Anada"] = df_anada
+        schedules_dict.setdefault(route, {})["Tornada"] = df_tornada
+
+    # Merge the three R2 dataframes into one and sort it
+    schedules_dict['R2']['Anada'] = pd.concat([schedules_dict['R2N']['Anada'], schedules_dict['R2']['Anada'], schedules_dict['R2S']['Anada']], ignore_index=True)
+    schedules_dict['R2']['Anada'] = gtfsdata.sort_schedule(schedules_dict['R2']['Anada'])
+    schedules_dict['R2']['Tornada'] = pd.concat([schedules_dict['R2N']['Tornada'], schedules_dict['R2']['Tornada'], schedules_dict['R2S']['Tornada']], ignore_index=True)
+    schedules_dict['R2']['Tornada'] = gtfsdata.sort_schedule(schedules_dict['R2']['Tornada'])
+
+    # Process the merged dataframe into North, Center and South
+    schedules_dict['R2 Centre'] = {}
+    schedules_dict['R2N']['Anada'], schedules_dict['R2 Centre']['Anada'], schedules_dict['R2S']['Anada'] = tabuladata.get_r2_nordcentresud(schedules_dict['R2']['Anada'])
+    # Same, for "Tornada" (we have to reverse the columns so the function works, and then reverse back)
+    schedules_dict['R2N']['Tornada'], schedules_dict['R2 Centre']['Tornada'], schedules_dict['R2S']['Tornada'] = tabuladata.get_r2_nordcentresud(schedules_dict['R2']['Tornada'][schedules_dict['R2']['Tornada'].columns[::-1]])
+    schedules_dict['R2N']['Tornada'], schedules_dict['R2 Centre']['Tornada'], schedules_dict['R2S']['Tornada'] = [df[df.columns[::-1]] for df in [schedules_dict['R2N']['Tornada'], schedules_dict['R2 Centre']['Tornada'], schedules_dict['R2S']['Tornada']]] # Reverse back
+    # Now, make sure they all have the proper columns
+    routes = ['R2N', 'R2 Centre', 'R2S']
+    for route in routes:
+        schedules_dict[route]['Anada'] = helpers.fix_stationnames(schedules_dict[route]['Anada'], route)
+        schedules_dict[route]['Tornada'] = helpers.fix_stationnames(schedules_dict[route]['Tornada'], route)
+        schedules_dict[route]['Anada'] = helpers.check_df_needsreversing(schedules_dict[route]['Anada'])
+        schedules_dict[route]['Tornada'] = helpers.check_df_needsreversing(schedules_dict[route]['Tornada'])
+        
+    print("...done.")
+
+prepare_r2()
+
+print("...all done.")
 
 
 """ r1_anada_feiners, r1_tornada_feiners = gtfsdata.get_schedule_cercanias(data_cer, "R1", today)
@@ -359,6 +405,7 @@ app = Flask(__name__)
 scheduler = BackgroundScheduler()
 scheduler.add_job(refresh_datasets, 'interval', days=7)
 scheduler.add_job(refresh_schedules, 'cron', hour=3)
+scheduler.add_job(prepare_r2, 'cron', hour=3)
 
 scheduler.start()
 
