@@ -361,9 +361,9 @@ del schedule, url, h_values
 
 ## Getting specific services within a line (e.g. R2 Nord, S2, etc.)
 
-r2_nord_anada_feiners, r2_centre_anada_feiners, r2_sud_anada_feiners = tabuladata.get_r2_nordcentresud(r2_anada_feiners)
-r2_nord_tornada_feiners, r2_centre_tornada_feiners, r2_sud_tornada_feiners = tabuladata.get_r2_nordcentresud(r2_tornada_feiners[r2_tornada_feiners.columns[::-1]]) # Reverse columns, so the function works
-r2_nord_tornada_feiners, r2_centre_tornada_feiners, r2_sud_tornada_feiners = [df[df.columns[::-1]] for df in [r2_nord_tornada_feiners, r2_centre_tornada_feiners, r2_sud_tornada_feiners]] # Reverse back
+#r2_nord_anada_feiners, r2_centre_anada_feiners, r2_sud_anada_feiners = tabuladata.get_r2_nordcentresud(r2_anada_feiners)
+#r2_nord_tornada_feiners, r2_centre_tornada_feiners, r2_sud_tornada_feiners = tabuladata.get_r2_nordcentresud(r2_tornada_feiners[r2_tornada_feiners.columns[::-1]]) # Reverse columns, so the function works
+#r2_nord_tornada_feiners, r2_centre_tornada_feiners, r2_sud_tornada_feiners = [df[df.columns[::-1]] for df in [r2_nord_tornada_feiners, r2_centre_tornada_feiners, r2_sud_tornada_feiners]] # Reverse back
 
 # Separating R5 pdf into R5, R50 and S4
 #r5_r5_anada_feiners, r5_s4_anada_feiners, r5_r50_anada_feiners = tabuladata.get_r5_services(r5_anada_feiners)
@@ -439,6 +439,7 @@ def generate_data():
         with app.app_context():
 
             data = []
+            routes = ['R1', 'R2', 'R2N', 'R2 Centre', 'R2S', 'R3', 'R4', 'R5', 'R50', 'R6', 'R60', 'R7', 'R8', 'S1', 'S2', 'S3', 'S4', 'S8', 'S9']
             for route in routes:
                 data.append({
                     "trainLine": f"Rodalies {route}",

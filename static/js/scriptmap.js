@@ -91,7 +91,7 @@ eventSource.onmessage = function(event) {
           0.1210, 0.1040, 0.0850, 0.0680, 
           0.0480, 0.0280, 0.000]
     },
-    "Rodalies R2 Nord": {
+    "Rodalies R2N": {
         "path": "path9390",
         "stationPositions": [0.000, 0.0355, 0.0645, 0.0930, 
           0.1230, 0.1520, 0.1825, 0.2120, 
@@ -105,7 +105,7 @@ eventSource.onmessage = function(event) {
           0.8705, 0.7595, 0.6745, 0.5605, 
           0.424, 0.263, 0.2105, 0.0945, 0.05, 0]
     },
-    "Rodalies R2 Sud": {
+    "Rodalies R2S": {
         "path": "path9388",
         "stationPositions": [0.0000, 0.172, 0.284, 0.403, 
           0.456, 0.5510, 0.5870, 0.6280, 
