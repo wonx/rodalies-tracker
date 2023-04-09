@@ -54,6 +54,10 @@ def refresh_schedules():
             print("Exchanging inbound and outbound trains dataframes")
             df_anada, df_tornada = df_tornada, df_anada
 
+        # Convert hours beyond 23h to 00h.
+        df_anada = df_anada.applymap(lambda x: gtfsdata.convert_24_to_00(x) if not pd.isna(x) else x)
+        df_tornada = df_tornada.applymap(lambda x: gtfsdata.convert_24_to_00(x) if not pd.isna(x) else x)
+        
         # Save in the dict
         schedules_dict.setdefault(route, {})["Anada"] = df_anada
         schedules_dict.setdefault(route, {})["Tornada"] = df_tornada

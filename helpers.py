@@ -29,69 +29,136 @@ def hora_a_segons(hora):
         h, m, s = hora.split(":")
     return int(h) * 3600 + int(m) * 60 + int(s)
 
+# Some schedules contain hours that go beyond 23:59 (e.g. 24, 25, 26.. hours into 00, 01, 02...)
+def convert_24_to_00(time):
+    if time.count(":") == 1:
+        h, m = time.split(":")
+        s = 0
+    else:
+        h, m, s = time.split(":")
+    seconds = int(h) * 3600 + int(m) * 60 + int(s)
+    hours, remainder = divmod(seconds, 3600)
+    if hours >= 24:
+        hours = hours % 24
+    minutes, seconds = divmod(remainder, 60)
+    return f"{hours:02d}:{minutes:02d}:{seconds:02d}"
+
 # Main function that returns the position of a train according to a schedule.
-def busca_estacions(df, hora, row, inverse=False):
+def busca_estacions_multiday(df, time, row, inverse=False):
+    #print(f"Finding train {row} at {time}")
     train = df.iloc[row]
 
-    # If the row is empty (train doesn't stop), skip it
-    if train.isna().all():
-        return f"Train {row} does not stop."
-    
-    # Convert the time to seconds
-    segons = hora_a_segons(hora)
-
+    # Get the times of the first and last stops
     firsttrain = train.loc[train.first_valid_index()]
     lasttrain = train.loc[train.last_valid_index()]
 
+    # Convert times to seconds
     seg_firsttrain = hora_a_segons(firsttrain)
     seg_lasttrain = hora_a_segons(lasttrain)
-    
-    # si el tren acaba al dia seguent, sumar els segons del dia abans (sino, es trenca tot)
-    if seg_lasttrain < seg_firsttrain:
-        seg_lasttrain += 86400
 
-    # Si la hora no està entre l'inici i el final d'un tren, aquell tren no està circulant
-    if (segons < seg_firsttrain and segons < seg_lasttrain) or (segons > seg_firsttrain and segons > seg_lasttrain):
-        return -1
-    
-    # Recorrem les columnes del dataframe fins trobar la primera que té una hora major o igual a la donada
-    for i in range(len(train)):
-        # If value is Nan, skip cell
-        if pd.isna(train[i]):
-            continue
-        else:
-            # For each station, check if the departure time is larger than the specified hour, and stop there.
-            if hora_a_segons(train[i]) >= segons:
-                break
-    
-    # Si hem trobat la primera columna amb una hora major o igual a la donada, comprovem si és exactament igual o no
-    if train[i] == hora:
-        # Si és exactament igual, vol dir que el tren està en aquesta estació
-        print(f"El tren {row} està aturat a l'estació de {train.index[i]} ({i}) a les {hora}.")
-        return i
-    
-    # Si no és exactament igual, vol dir que el tren està entre aquesta estació i l'anterior
-    # Compute the % of the route between the two stations
-    
-    # If the train didn't stop at the previous station, we need to get the time of the last actual stop.
-    previousstop = train[i-1]
-    j = 1
-    while pd.isna(previousstop):
-        j +=1
-        previousstop = train[i-j]
+    # First, check if it's a multiday trip (end of the trip is beyond 23:59)
+    def is_multiday():
+        if seg_lasttrain < seg_firsttrain:
+            return True
+        return False
 
-    secondsdifference = hora_a_segons(train[i]) - hora_a_segons(previousstop)
-    secondscurrent = segons - hora_a_segons(previousstop)
-    routepercent = round(secondscurrent / secondsdifference, 2)
-    print(f"El tren {row} està entre les estacions de {train.index[i-j]} i {train.index[i]} ({(i-j)+routepercent*j}) a les {hora}.")
-    if inverse == False:
-        return (i-j)+routepercent*j
-    elif inverse == True: # invert the value ((number of stations-1) - fraction of the route)
-        return (len(train)-1)-((i-j)+routepercent*j)
+    #Checks if, in a multiday trip, the time already corresponds to the next day
+    def is_trip_nextday(train, time):
+        time_seconds = hora_a_segons(time)
+        time_laststop = train.loc[train.last_valid_index()]
+        if (time_seconds >= hora_a_segons("00:00")) and (time_seconds < hora_a_segons(time_laststop)):
+            return True
+        return False
+
+    # Checks if the train is currently circulating
+    def is_circulating(time_seconds):
+        #print("Time in seconds:", time_seconds)
+        #print("First stop, seconds:", seg_firsttrain)
+        #print("Last stop, seconds:", seg_lasttrain)
+        if (time_seconds >= seg_firsttrain and time_seconds < seg_lasttrain):
+            return True
+        return False
+
+    multiday = False
+    time_seconds = hora_a_segons(time)
+    if is_multiday():
+        multiday = True
+        seg_lasttrain = seg_lasttrain + 86400 # Add one day to the arrival time of the last stop
+        if (is_trip_nextday(train, time)):
+            #print("And we are beyond the first day!")
+            time_seconds = time_seconds + 86400 # Add one day to the current time
+    #else:
+        #print("Trip starts and ends the same day")
+    #print(time_seconds)
+
+    if is_circulating(time_seconds):
+        print(f"Train {row} at {time} is circulating from {firsttrain} to {lasttrain}")
+        if multiday: print("Trip is multiday")
+
+        # Find the next station the train will stop (i). Basically, for each station, check if the departure time is larger than the specified hour, and stop there.
+        for i in range(len(train)):
+            # If value is Nan, just skip cell
+            if pd.isna(train[i]):
+                continue
+            else:
+                
+                #print("train[i]", train[i])
+                #print("is multiday", multiday)
+                #print("is next day for train[i]", is_trip_nextday(train, train[i]))
+                if not (multiday and is_trip_nextday(train, train[i])): time_at_stop = hora_a_segons(train[i])
+                else: time_at_stop = hora_a_segons(train[i]) + 86400 # If it's already the next day, add one more day to the times at the schedule 
+                print(f"Time at stop {i}, {time_at_stop}")
+                print(f"Current time, {time_seconds}")
+                if time_at_stop >= time_seconds:
+                    print("Ok, this one")
+                    break
+        
+        # Once we found the next stop the train will stop, check if it's exactly at the station
+        if time_at_stop == time_seconds:
+            # If the time is the same, 
+            print(f"El tren {row} està aturat a l'estació de {train.index[i]} ({i}) a les {time}.")
+            return i
+        
+        # Otherwise, it means that the train is circulating between stations
+        # Compute the % of the route between the two stations
+        # If the train didn't stop at the previous station, we need to get the time of the last actual stop.
+        previousstop = train[i-1]
+        j = 1
+        while pd.isna(previousstop):
+            j +=1
+            previousstop = train[i-j]
+        #print(f"Previous stop was", train.index[i-j], (i-j))
+        #print(f"Next stop is", train.index[i], i)
+        #print(f"Previous stop was {j} stops ago.")
+
+
+        if not (multiday and is_trip_nextday(train, previousstop)): time_at_previous_stop = hora_a_segons(previousstop)
+        else: time_at_previous_stop = hora_a_segons(previousstop) + 86400
+
+        print("time at stop", time_at_stop)
+        print("time at previous stop", time_at_previous_stop)
+        print("previousstop", previousstop)
+        print("segons:", time_seconds)
+        secondsdifference = time_at_stop - time_at_previous_stop
+        print("seconds difference:",secondsdifference)
+        secondscurrent = time_seconds - time_at_previous_stop
+        print("seconds current:", secondscurrent)
+        routepercent = round(secondscurrent / secondsdifference, 3)
+        print("route %:",routepercent)
+        
+        print(f"El tren {row} està entre les estacions de {train.index[i-j]} i {train.index[i]} ({(i-j)+routepercent*j}) a les {time}.")
+        if inverse == False:
+            return (i-j)+routepercent*j
+        elif inverse == True: # invert the value ((number of stations-1) - fraction of the route)
+            return (len(train)-1)-((i-j)+routepercent*j)
+
+
+    else:
+        return -1 # That trip is not circulating right now
 
 
 # Basically loops through busca_estacions()
-def find_alltrains(df, hora, inverse=False):
+def find_alltrains(df, time, inverse=False):
 
     # Drop empty columns (stations where no train stops)
     #df = df.dropna(axis=1, how='all')
@@ -103,7 +170,7 @@ def find_alltrains(df, hora, inverse=False):
     #display(df)
     positions = []
     for row in range(0,len(df)):
-        positions.append(busca_estacions(df, hora, row, inverse))
+        positions.append(busca_estacions_multiday(df, time, row, inverse))
         
     # Remove non-valid positions (-1)
     positions = list(filter(lambda x: x != -1, positions))

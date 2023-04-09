@@ -74,6 +74,22 @@ def check_date(date, dataset, network):
 #check_date(20230405, data_cer, 'cercanias')
 
 
+## Try to convert 24, 25, 26.. hours into 00, 01, 02...
+import pandas as pd
+def convert_24_to_00(time):
+    if time.count(":") == 1:
+        h, m = time.split(":")
+        s = 0
+    else:
+        h, m, s = time.split(":")
+    seconds = int(h) * 3600 + int(m) * 60 + int(s)
+    hours, remainder = divmod(seconds, 3600)
+    if hours >= 24:
+        hours = hours % 24
+    minutes, seconds = divmod(remainder, 60)
+    return f"{hours:02d}:{minutes:02d}:{seconds:02d}"
+
+
 # Topological sort algorithm to find the order of the stops based on the order of each individual list. Takes a list of lists as argument.
 def deduce_stop_order(lst):
     print("Determining station order...")
@@ -259,9 +275,10 @@ def get_schedule_fgc(dataset, route, date):
             trip.columns = pd.Series(stops).map(stop_dict).tolist() # ADd the stop names as headers
             #trip.columns = stops  # set the column names to the stops
             df_schedule[index] = pd.concat([df_schedule[index], trip], axis=0, ignore_index=True)
-
+            
+    # Finally, sort the schedules    
     df_schedule = [sort_schedule(schedule) if not schedule.empty else schedule for schedule in df_schedule]
-    
+
     return df_schedule
 
 # Usage example:
@@ -331,7 +348,7 @@ def get_schedule_cercanias(dataset, route, date):
             trip_list_df.append(trip)
             #display(trip)
 
-        # Groups the trips in trip_list_df into dataframes # Breaks R7.
+        # Groups the trips in trip_list_df into dataframes
         for element in group_schedules(trip_list_df):
             schedule_list.append(element) # add a list of dataframes to that position of df_schedule (some lines, like R7 contain more than one schedule in a single service....)
         
