@@ -21,3 +21,6 @@ dfSelect.addEventListener("change", function() {
     tableHtml += "</tbody></table>";
     dfTable.innerHTML = tableHtml;
 });
+
+// Call the event listener function on page load to display the table for the first item
+dfSelect.dispatchEvent(new Event("change"));

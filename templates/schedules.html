@@ -7,7 +7,11 @@
   </head>
   <body>
     <div id="clock"></div>
-    <h1>Select a schedule:</h1>
+    <ul>
+      <li><a href="/">Line view</a></li>
+      <li><a href="/map">Map view</a></li>
+      <li><a href="/schedules">Schedule view</a></li>
+    </ul>
     <select id="df-select">
       {% for df in dfs %}
         <option value="{{ df.name }}">{{ df.name }}</option>
