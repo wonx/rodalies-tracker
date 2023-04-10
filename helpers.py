@@ -117,7 +117,11 @@ def busca_estacions_multiday(df, time, row, inverse=False):
         if time_at_stop == time_seconds:
             # If the time is the same, 
             print(f"El tren {row} està aturat a l'estació de {train.index[i]} ({i}) a les {time}.")
-            return i
+            #return i
+            if inverse == False:
+                return i
+            elif inverse == True:
+                return (len(train)-1)-i #((number of stations-1) - index of current station)
         
         # Otherwise, it means that the train is circulating between stations
         # Compute the % of the route between the two stations
