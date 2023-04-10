@@ -115,9 +115,8 @@ def busca_estacions_multiday(df, time, row, inverse=False):
         
         # Once we found the next stop the train will stop, check if it's exactly at the station
         if time_at_stop == time_seconds:
-            # If the time is the same, 
+            # If the time is the same, just return the station index
             print(f"El tren {row} està aturat a l'estació de {train.index[i]} ({i}) a les {time}.")
-            #return i
             if inverse == False:
                 return i
             elif inverse == True:

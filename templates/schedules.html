@@ -6,7 +6,8 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
   </head>
   <body>
-    <h1>Select a dataframe:</h1>
+    <div id="clock"></div>
+    <h1>Select a schedule:</h1>
     <select id="df-select">
       {% for df in dfs %}
         <option value="{{ df.name }}">{{ df.name }}</option>
@@ -15,32 +16,11 @@
 
     <div id="df-table">
     </div>
-
     <script>
       var dfs = {{ dfs | tojson }};
-      console.log(dfs)
-      var dfSelect = document.getElementById("df-select");
-      var dfTable = document.getElementById("df-table");
-
-      dfSelect.addEventListener("change", function() {
-          var selectedValue = dfSelect.options[dfSelect.selectedIndex].value;
-          var selectedData = dfs.find(df => df.name === selectedValue);
-          var keys = selectedData.columns;
-          var tableHtml = "<table><thead><tr>";
-          keys.forEach(function(key) {
-              tableHtml += "<th>" + key + "</th>";
-          });
-          tableHtml += "</tr></thead><tbody>";
-          selectedData.data.forEach(function(row) {
-              tableHtml += "<tr>";
-              keys.forEach(function(key) {
-                  tableHtml += "<td>" + row[key] + "</td>";
-              });
-              tableHtml += "</tr>";
-          });
-          tableHtml += "</tbody></table>";
-          dfTable.innerHTML = tableHtml;
-      });
-  </script>
+      console.log(dfs);
+    </script>
+    <script src="{{ url_for('static', filename='js/script_schedules.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/clock.js') }}"></script>
   </body>
 </html>

@@ -77,10 +77,8 @@ table {
   border-collapse: collapse;
   background-color: #f8f8f8;
   margin: auto;
-  font-size: 12px;
   table-layout: fixed;
-
-
+  font-size: 0.5vw; 
 }
 table, th, td {
   border: 1px solid #ddd;
@@ -96,4 +94,12 @@ tr:nth-child(even) {
 }
 td {
   padding: 10px;
+}
+
+#clock {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  font-size: 20px;
+  font-weight: bold;
 }
