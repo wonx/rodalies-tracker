@@ -108,6 +108,9 @@ def prepare_r2():
         schedules_dict[route]['Tornada'] = helpers.fix_stationnames(schedules_dict[route]['Tornada'], route)
         schedules_dict[route]['Anada'] = helpers.check_df_needsreversing(schedules_dict[route]['Anada'])
         schedules_dict[route]['Tornada'] = helpers.check_df_needsreversing(schedules_dict[route]['Tornada'])
+        # Deletes the stop Montcada Bifurcació, which causes the bug #5
+        schedules_dict[route]['Anada'] = schedules_dict[route]['Anada'].drop(columns='Montcada Bifurcació', errors='ignore') 
+        schedules_dict[route]['Tornada'] = schedules_dict[route]['Tornada'].drop(columns='Montcada Bifurcació', errors='ignore')
         
     print("...done.")
 
