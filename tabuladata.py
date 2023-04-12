@@ -259,6 +259,11 @@ def get_r2_nordcentresud(df):
     df_sud = df_sud.drop(df_sud[df_sud['Aeroport'].notna()].index) # Si surt l'aeroport, tampoc es Nord
     df_sud = df_sud.dropna(axis=1, how='all') # Esborrem les columnes buides
 
+    # Remove duplicated rows in df_center, since not all conditions are mutually exclusive
+    indices_list = df_nord.index.tolist()
+    indices_list = indices_list+df_sud.index.tolist()
+    df_centre = df_centre.drop(indices_list, errors='ignore')
+
     # Other
     #  Get the rows that did not fit any of the three dataframes, and create another one (df_other) 
     index_subsets = pd.concat([df_nord, df_centre, df_sud]).index
