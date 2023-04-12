@@ -78,6 +78,8 @@ def prepare_r2():
         # Standardize the amount of station and their names
         df_anada = helpers.fix_stationnames(df_anada, 'R2')
         df_tornada = helpers.fix_stationnames(df_tornada, 'R2')
+        df_anada = df_anada[df_anada.columns.intersection(helpers.stations_dict['R2'])] #Keep only columns from that line (deals with edge case where Montcada Bifurcació appears in a R2 trip)
+        df_tornada = df_tornada[df_tornada.columns.intersection(helpers.stations_dict['R2'])]
         df_anada = helpers.check_df_needsreversing(df_anada)
         df_tornada = helpers.check_df_needsreversing(df_tornada)
         if df_tornada.columns[0] == helpers.stations_dict[route][0]:
@@ -94,6 +96,8 @@ def prepare_r2():
     schedules_dict['R2']['Anada'] = gtfsdata.sort_schedule(schedules_dict['R2']['Anada'])
     schedules_dict['R2']['Tornada'] = pd.concat([schedules_dict['R2N']['Tornada'], schedules_dict['R2']['Tornada'], schedules_dict['R2S']['Tornada']], ignore_index=True)
     schedules_dict['R2']['Tornada'] = gtfsdata.sort_schedule(schedules_dict['R2']['Tornada'])
+    print(f"Primera estació d'anada de la R2: {schedules_dict['R2']['Anada'].columns[0]}")
+    print(f"Primera estació de tornada de la R2: {schedules_dict['R2']['Tornada'].columns[0]}")
 
     # Process the merged dataframe into North, Center and South
     schedules_dict['R2 Centre'] = {}
@@ -108,9 +112,6 @@ def prepare_r2():
         schedules_dict[route]['Tornada'] = helpers.fix_stationnames(schedules_dict[route]['Tornada'], route)
         schedules_dict[route]['Anada'] = helpers.check_df_needsreversing(schedules_dict[route]['Anada'])
         schedules_dict[route]['Tornada'] = helpers.check_df_needsreversing(schedules_dict[route]['Tornada'])
-        # Deletes the stop Montcada Bifurcació, which causes the bug #5
-        schedules_dict[route]['Anada'] = schedules_dict[route]['Anada'].drop(columns='Montcada Bifurcació', errors='ignore') 
-        schedules_dict[route]['Tornada'] = schedules_dict[route]['Tornada'].drop(columns='Montcada Bifurcació', errors='ignore')
         # Convert hours beyond 23h to 00h.
         schedules_dict[route]['Anada'] = schedules_dict[route]['Anada'].applymap(lambda x: gtfsdata.convert_24_to_00(x) if not pd.isna(x) else x)
         schedules_dict[route]['Tornada'] = schedules_dict[route]['Tornada'].applymap(lambda x: gtfsdata.convert_24_to_00(x) if not pd.isna(x) else x)
