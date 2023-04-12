@@ -102,7 +102,7 @@ def prepare_r2():
     schedules_dict['R2N']['Tornada'], schedules_dict['R2 Centre']['Tornada'], schedules_dict['R2S']['Tornada'] = tabuladata.get_r2_nordcentresud(schedules_dict['R2']['Tornada'][schedules_dict['R2']['Tornada'].columns[::-1]])
     schedules_dict['R2N']['Tornada'], schedules_dict['R2 Centre']['Tornada'], schedules_dict['R2S']['Tornada'] = [df[df.columns[::-1]] for df in [schedules_dict['R2N']['Tornada'], schedules_dict['R2 Centre']['Tornada'], schedules_dict['R2S']['Tornada']]] # Reverse back
     # Now, make sure they all have the proper columns
-    routes = ['R2N', 'R2 Centre', 'R2S']
+    routes = ['R2N', 'R2 Centre', 'R2S', 'R2']
     for route in routes:
         schedules_dict[route]['Anada'] = helpers.fix_stationnames(schedules_dict[route]['Anada'], route)
         schedules_dict[route]['Tornada'] = helpers.fix_stationnames(schedules_dict[route]['Tornada'], route)
@@ -111,6 +111,9 @@ def prepare_r2():
         # Deletes the stop Montcada Bifurcació, which causes the bug #5
         schedules_dict[route]['Anada'] = schedules_dict[route]['Anada'].drop(columns='Montcada Bifurcació', errors='ignore') 
         schedules_dict[route]['Tornada'] = schedules_dict[route]['Tornada'].drop(columns='Montcada Bifurcació', errors='ignore')
+        # Convert hours beyond 23h to 00h.
+        schedules_dict[route]['Anada'] = schedules_dict[route]['Anada'].applymap(lambda x: gtfsdata.convert_24_to_00(x) if not pd.isna(x) else x)
+        schedules_dict[route]['Tornada'] = schedules_dict[route]['Tornada'].applymap(lambda x: gtfsdata.convert_24_to_00(x) if not pd.isna(x) else x)
         
     print("...done.")
 
