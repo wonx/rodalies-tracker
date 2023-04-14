@@ -2,7 +2,7 @@
 
 ![](https://github.com/wonx/rodalies-tracker/blob/master/static/mapsquarescreenshot.png)
 
-***rodalies-tracker*** an experiment to create a visualization of [Barcelona's commuter trains](https://en.wikipedia.org/wiki/Rodalies_de_Catalunya) in real time.
+***rodalies-tracker*** is an experiment to create a visualization of [Barcelona's commuter trains](https://en.wikipedia.org/wiki/Rodalies_de_Catalunya) in real time.
 
 The commuter rail network is managed by two companies: [Renfe](https://en.wikipedia.org/wiki/Renfe) and [Ferrocarrils de la Generalitat (FGC)](https://en.wikipedia.org/wiki/Ferrocarrils_de_la_Generalitat_de_Catalunya), which together operate under the brand Rodalies de Catalunya.
 
