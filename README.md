@@ -19,6 +19,12 @@ So, a couple things to keep in mind:
 - It was done as a hobby and as a learning experience, and I do not have plans to maintain it indefinitely. So it might break at any time if Renfe or FGC do any substantial changes to their routes.
 ## Online demo:
 - An instance of rodalies-tracker is currently accesible at: http://rodalies.marcpalaus.com
+
+## How can I contribute?
+- ⭐ **Star** this repository if you like this project!
+- 🧪 **Testing**: Try it! Follow the installation instructions and try it for yourself. 
+- 🐞 **Issue reporting**:  Found a bug? Routes changed and the info is now outdated? Help me improve by reporting it!
+
 ## How it works:
 
 - It obtains publicly available data in GTFS format from the respective Renfe and FGC websites ([Renfe](https://data.renfe.com/dataset/horarios-cercanias), [FGC](https://www.fgc.cat/opendata/)). That data is periodically queried (currently once a week).
@@ -30,3 +36,7 @@ So, a couple things to keep in mind:
 - The Flask app streams that data for each one of the lines. Several HTML templates use that information to display the data:
     - In line view, using Javascript and CSS, each the train line is dynamically created from a list of stations, and the positions are placed as markers on the line (yellow for outbound trains, orange for inbound trains) based on the stream of data from the Python backend.
     - In map view, using a SVG map of the train network as a base, markers are placed alongside each path of the SVG file. The location of each station in the map has been manually placed, and the positions provided by the backend are then translated to fractions of the lengths of the corresponding SVG path.
+
+## Installation:
+- Just clone this repository (`git clone https://github.com/wonx/rodalies-tracker/`), and start the app by running `python3 app.py`. You need to install the `fuzzywuzzy` library as a requirement. `tabuladata`, which parsed schedules from PDF files, is no longer needed, and neither is JDK.
+- Once the app downloads the datasets and parses the schedules (can take a up to a minute or two), *rodalies-tracker* it will be available at `http://localhost:9019`
