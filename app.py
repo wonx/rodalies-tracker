@@ -61,10 +61,12 @@ def refresh_schedules():
         schedules_dict.setdefault(route, {})["Anada"] = df_anada
         schedules_dict.setdefault(route, {})["Tornada"] = df_tornada
 
+    # Merge overlapping routes from FGC, for the simplified line view
+    prepare_r5r50r6r60()
+
     print("...done.")
     return schedules_dict
 
-refresh_schedules()
 
 # Line R2 is a completely different story that must be pre-processed in a different way
 def prepare_r2(): 
@@ -118,6 +120,33 @@ def prepare_r2():
         
     print("...done.")
 
+
+# For the allroutes.html, combine several lines: (R5, R50, S3, S4, S8, S9) & (R6, R60)
+def prepare_r5r50r6r60():
+    global schedules_dict
+    print("Merging R5, R50, S3, S4, S8 & S9")
+    routes = ['R50', 'S3', 'S4', 'S8', 'S9']
+    schedules_dict['R5 R50 S3 S4 S8 S9'] = schedules_dict['R5'].copy()
+    for route in routes:
+        for direction in ['Anada', 'Tornada']:
+            schedules_dict['R5 R50 S3 S4 S8 S9'][direction] = pd.concat([schedules_dict['R5 R50 S3 S4 S8 S9'][direction], schedules_dict[route][direction]])
+
+    # Sorting elements after concatenating
+    schedules_dict['R5 R50 S3 S4 S8 S9']['Anada'] = gtfsdata.sort_schedule(schedules_dict['R5 R50 S3 S4 S8 S9']['Anada'])
+    schedules_dict['R5 R50 S3 S4 S8 S9']['Tornada'] = gtfsdata.sort_schedule(schedules_dict['R5 R50 S3 S4 S8 S9']['Tornada'])
+
+    print("Merging R6, R60")
+    routes = ['R60']
+    schedules_dict['R6 R60'] = schedules_dict['R6'].copy()
+    for route in routes:
+        for direction in ['Anada', 'Tornada']:
+            schedules_dict['R6 R60'][direction] = pd.concat([schedules_dict['R6 R60'][direction], schedules_dict[route][direction]])
+
+    # Sorting elements after concatenating
+    schedules_dict['R6 R60']['Anada'] = gtfsdata.sort_schedule(schedules_dict['R6 R60']['Anada'])
+    schedules_dict['R6 R60']['Tornada'] = gtfsdata.sort_schedule(schedules_dict['R6 R60']['Tornada'])
+
+refresh_schedules()
 prepare_r2()
 
 print("...all done.")
@@ -424,6 +453,10 @@ scheduler.start()
 def index():
     return render_template('index.html')
 
+@app.route('/alllines')
+def alllines():
+    return render_template('alllines.html')
+
 @app.route('/map')
 def map():
     return render_template('map.html')
@@ -450,7 +483,7 @@ def generate_data():
         with app.app_context():
 
             data = []
-            routes = ['R1', 'R2', 'R2N', 'R2 Centre', 'R2S', 'R3', 'R4', 'R5', 'R50', 'R6', 'R60', 'R7', 'R8', 'S1', 'S2', 'S3', 'S4', 'S8', 'S9']
+            routes = list(schedules_dict.keys())
             for route in routes:
                 data.append({
                     "trainLine": f"Rodalies {route}",
@@ -458,118 +491,6 @@ def generate_data():
                     "positions2": helpers.find_alltrains(schedules_dict[route]['Tornada'], bcn_time, inverse=True)
                 })
 
-            """ data = [
-                {
-                    "trainLine": "Rodalies R1",
-                    "positions1": helpers.find_alltrains(r1_anada_feiners, bcn_time),
-                    "positions2": helpers.find_alltrains(r1_tornada_feiners, bcn_time, inverse=True)
-                },
-                {
-                    "trainLine": "Rodalies R2",
-                    "positions1": helpers.find_alltrains(r2_anada_feiners, bcn_time),
-                    "positions2": helpers.find_alltrains(r2_tornada_feiners, bcn_time, inverse=True)
-                },
-                {
-                    "trainLine": "Rodalies R2 Nord",
-                    "positions1": helpers.find_alltrains(r2_nord_anada_feiners, bcn_time),
-                    "positions2": helpers.find_alltrains(r2_nord_tornada_feiners, bcn_time, inverse=True)
-                },
-                {
-                    "trainLine": "Rodalies R2 Centre",
-                    "positions1": helpers.find_alltrains(r2_centre_anada_feiners, bcn_time),
-                    "positions2": helpers.find_alltrains(r2_centre_tornada_feiners, bcn_time, inverse=True)
-                },
-                {
-                    "trainLine": "Rodalies R2 Sud",
-                    "positions1": helpers.find_alltrains(r2_sud_anada_feiners, bcn_time),
-                    "positions2": helpers.find_alltrains(r2_sud_tornada_feiners, bcn_time, inverse=True)
-                },
-                {
-                    "trainLine": "Rodalies R3",
-                    "positions1": helpers.find_alltrains(r3_anada_feiners, bcn_time),
-                    "positions2": helpers.find_alltrains(r3_tornada_feiners, bcn_time, inverse=True)
-                },
-                {
-                    "trainLine": "Rodalies R4",
-                    "positions1": helpers.find_alltrains(r4_anada_feiners, bcn_time),
-                    "positions2": helpers.find_alltrains(r4_tornada_feiners, bcn_time, inverse=True)
-                },
-                # {
-                #     "trainLine": "Rodalies R5 R50 S4",
-                #     "positions1": helpers.find_alltrains(r5_anada_feiners, bcn_time),
-                #     "positions2": helpers.find_alltrains(r5_tornada_feiners, bcn_time, inverse=True)
-                # },
-                {
-                    "trainLine": "Rodalies R5",
-                    "positions1": helpers.find_alltrains(r5_anada_feiners, bcn_time),
-                    "positions2": helpers.find_alltrains(r5_tornada_feiners, bcn_time, inverse=True)
-                },
-                {
-                    "trainLine": "Rodalies S4",
-                    "positions1": helpers.find_alltrains(s4_anada_feiners, bcn_time),
-                    "positions2": helpers.find_alltrains(s4_tornada_feiners, bcn_time, inverse=True)
-                },
-                {
-                    "trainLine": "Rodalies R50",
-                    "positions1": helpers.find_alltrains(r50_anada_feiners, bcn_time),
-                    "positions2": helpers.find_alltrains(r50_tornada_feiners, bcn_time, inverse=True)
-                },
-                # {
-                #     "trainLine": "Rodalies R6 R60",
-                #     "positions1": helpers.find_alltrains(r6_anada_feiners, bcn_time),
-                #     "positions2": helpers.find_alltrains(r6_tornada_feiners, bcn_time, inverse=True)
-                # },
-                {
-                    "trainLine": "Rodalies R6",
-                    "positions1": helpers.find_alltrains(r6_anada_feiners, bcn_time),
-                    "positions2": helpers.find_alltrains(r6_tornada_feiners, bcn_time, inverse=True)
-                },
-                {
-                    "trainLine": "Rodalies R60",
-                    "positions1": helpers.find_alltrains(r60_anada_feiners, bcn_time),
-                    "positions2": helpers.find_alltrains(r60_tornada_feiners, bcn_time, inverse=True)
-                },
-                {
-                    "trainLine": "Rodalies S3 S8 S9",
-                    "positions1": helpers.find_alltrains(s3s8s9_anada_feiners, bcn_time),
-                    "positions2": helpers.find_alltrains(s3s8s9_tornada_feiners, bcn_time, inverse=True)
-                },
-                {
-                    "trainLine": "Rodalies S3",
-                    "positions1": helpers.find_alltrains(s3_anada_feiners, bcn_time),
-                    "positions2": helpers.find_alltrains(s3_tornada_feiners, bcn_time, inverse=True)
-                },
-                {
-                    "trainLine": "Rodalies S8",
-                    "positions1": helpers.find_alltrains(s8_anada_feiners, bcn_time),
-                    "positions2": helpers.find_alltrains(s8_tornada_feiners, bcn_time, inverse=True)
-                },
-                {
-                    "trainLine": "Rodalies S9",
-                    "positions1": helpers.find_alltrains(s9_anada_feiners, bcn_time),
-                    "positions2": helpers.find_alltrains(s9_tornada_feiners, bcn_time, inverse=True)
-                },
-                {
-                    "trainLine": "Rodalies R7",
-                    "positions1": helpers.find_alltrains(r7_anada_feiners, bcn_time),
-                    "positions2": helpers.find_alltrains(r7_tornada_feiners, bcn_time, inverse=True),
-                },
-                {
-                    "trainLine": "Rodalies R8",
-                    "positions1": helpers.find_alltrains(r8_anada_feiners, bcn_time),
-                    "positions2": helpers.find_alltrains(r8_tornada_feiners, bcn_time, inverse=True),
-                },
-                {
-                    "trainLine": "Rodalies S1",
-                    "positions1": helpers.find_alltrains(s1_anada_feiners, bcn_time),
-                    "positions2": helpers.find_alltrains(s1_tornada_feiners, bcn_time, inverse=True),
-                },
-                {
-                    "trainLine": "Rodalies S2",
-                    "positions1": helpers.find_alltrains(s2_anada_feiners, bcn_time),
-                    "positions2": helpers.find_alltrains(s2_tornada_feiners, bcn_time, inverse=True),
-                }
-            ] """
             print(data)
             yield f"data: {json.dumps(data)}\n\n"
             time.sleep(1)

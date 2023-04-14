@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="UTF-8">
-    <title>Schedules</title>
+    <meta charset="utf-8">
+    <title>Rodalies de Barcelona</title>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
   </head>
   <body>
@@ -13,19 +13,9 @@
       <li><a href="/map">Map view</a></li>
       <li><a href="/schedules">Schedule view</a></li>
     </ul>
-    <select id="df-select">
-      {% for df in dfs %}
-        <option value="{{ df.name }}">{{ df.name }}</option>
-      {% endfor %}
-    </select>
-
-    <div id="df-table">
+    <div class="train-lines-container">
     </div>
-    <script>
-      var dfs = {{ dfs | tojson }};
-      console.log(dfs);
-    </script>
-    <script src="{{ url_for('static', filename='js/script_schedules.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/script_routes_all.js') }}"></script>
     <script src="{{ url_for('static', filename='js/clock.js') }}"></script>
   </body>
 </html>
