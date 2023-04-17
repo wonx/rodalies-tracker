@@ -64,6 +64,9 @@ def refresh_schedules():
     # Merge overlapping routes from FGC, for the simplified line view
     prepare_r5r50r6r60()
 
+    # Process R2 routes into R2 North, R2 Center and R2 South they fit the paths in the map view.
+    prepare_r2()
+
     print("...done.")
     return schedules_dict
 
@@ -147,7 +150,7 @@ def prepare_r5r50r6r60():
     schedules_dict['R6 R60']['Tornada'] = gtfsdata.sort_schedule(schedules_dict['R6 R60']['Tornada'])
 
 refresh_schedules()
-prepare_r2()
+
 
 print("...all done.")
 
@@ -445,7 +448,7 @@ app = Flask(__name__)
 scheduler = BackgroundScheduler()
 scheduler.add_job(refresh_datasets, 'interval', days=7)
 scheduler.add_job(refresh_schedules, 'cron', hour=3)
-scheduler.add_job(prepare_r2, 'cron', hour=3)
+#scheduler.add_job(prepare_r2, 'cron', hour=3)
 
 scheduler.start()
 
