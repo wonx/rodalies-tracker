@@ -258,7 +258,10 @@ def generate_hours(df, h_values):
 # Fixes the station names returned by GTFS and adds any missing intermediate station
 from fuzzywuzzy import fuzz
 def fix_stationnames(df, route):
+    print("Fixing station names")
     df = df.copy()
+    #print(route)
+    #print(df.shape,df.columns)
     # Define a function to match column names using fuzzy string matching
     def match_columns(column_name, column_names):
         # Find the best match between the column_name and the column_names using fuzzy string matching
@@ -276,16 +279,23 @@ def fix_stationnames(df, route):
                             "Balenyà":"Balenyà-Tona-Seva",
                             "Barcelona-Torre Del Baró":"Torre del Baró-Vallbona",
                             "Sant Andreu Arenal":"Barcelona St.Andreu Arenal",
+                            "Barcelona-Fabra I Puig":"Barcelona St.Andreu Arenal",
                             "Sant Cugat":"Sant Cugat del Vallès",
                             "Montserrat-Aeri":"Aeri de Montserrat",
                             "Pl. Catalunya": "Barcelona - Pl. Catalunya",
                             "Martorell Vila":"Martorell Vila | Castellbisbal",
-                            "El Prat Aeroport":"Aeroport"})
+                            "El Prat Aeroport":"Aeroport",
+                            "Terrassa Estacio Nord'":"Terrassa"})
 
     # Rename the columns in df2 that have misspelled names using fuzzy string matching
     df = df.rename(columns=lambda x: match_columns(x, stations_dict[route]))
     _df = pd.DataFrame(columns=stations_dict[route])
-    df = pd.concat([_df, df], join='outer')
+    #print(df.shape, df.columns)
+    #print(_df.shape, _df.columns)
+    if len(df. columns) == len(set(df. columns)): # check if there are duplicated columns
+        df = pd.concat([_df, df], join='outer')
+    else:
+        print("Duplicated columns, matching didn't work")
     return df
 # Usage: 
 # df = fix_stationnames(df, route) 
