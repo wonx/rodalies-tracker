@@ -260,8 +260,8 @@ from fuzzywuzzy import fuzz
 def fix_stationnames(df, route):
     print("Fixing station names")
     df = df.copy()
-    #print(route)
-    #print(df.shape,df.columns)
+    print(route)
+    print(df.shape,df.columns)
     # Define a function to match column names using fuzzy string matching
     def match_columns(column_name, column_names):
         # Find the best match between the column_name and the column_names using fuzzy string matching
@@ -285,13 +285,13 @@ def fix_stationnames(df, route):
                             "Pl. Catalunya": "Barcelona - Pl. Catalunya",
                             "Martorell Vila":"Martorell Vila | Castellbisbal",
                             "El Prat Aeroport":"Aeroport",
-                            "Terrassa Estacio Nord'":"Terrassa"})
+                            "Terrassa Estacio Nord":"Terrassa Estació del Nord"})
 
     # Rename the columns in df2 that have misspelled names using fuzzy string matching
     df = df.rename(columns=lambda x: match_columns(x, stations_dict[route]))
     _df = pd.DataFrame(columns=stations_dict[route])
-    #print(df.shape, df.columns)
-    #print(_df.shape, _df.columns)
+    print(df.shape, df.columns)
+    print(_df.shape, _df.columns)
     if len(df. columns) == len(set(df. columns)): # check if there are duplicated columns
         df = pd.concat([_df, df], join='outer')
     else:
@@ -330,19 +330,19 @@ stations_dict = {
               "Palautordera", "Llinars del Vallès", "Cardedeu", "Les Franqueses del Vallès-Granollers Nord", 
               "Granollers Centre", "Montmeló", "Mollet-Sant Fost", "La Llagosta", "Montcada i Reixac", 
               "Barcelona - Sant Andreu", "Barcelona-El Clot-Aragó", "Barcelona - Estació de França", 
-              "Barcelona-Passeig de Gràcia", "Barcelona-Sants", "Bellvitge", "El Prat de Llobregat", 
+              "Barcelona-Passeig de Gràcia", "Barcelona-Sants", "Bellvitge | Gornal", "El Prat de Llobregat", 
               "Aeroport", "Viladecans", "Gavà", "Castelldefels", "Platja de Castelldefels", "Garraf", 
               "Sitges", "Vilanova i la Geltrú", "Cubelles", "Cunit", "Segur de Calafell", "Calafell", "Sant Vicenç de Calders"],
        "R2N": ["Maçanet-Massanes", "Hostalric", "Riells i Viabrea-Breda", "Gualba", "Sant Celoni", 
               "Palautordera", "Llinars del Vallès", "Cardedeu", "Les Franqueses del Vallès-Granollers Nord", 
               "Granollers Centre", "Montmeló", "Mollet-Sant Fost", "La Llagosta", "Montcada i Reixac", 
               "Barcelona - Sant Andreu", "Barcelona-El Clot-Aragó", "Barcelona-Passeig de Gràcia", 
-              "Barcelona-Sants", "Bellvitge", "El Prat de Llobregat", "Aeroport"],
+              "Barcelona-Sants", "Bellvitge | Gornal", "El Prat de Llobregat", "Aeroport"],
        "R2 Centre": ["Granollers Centre", "Montmeló", "Mollet-Sant Fost", "La Llagosta", "Montcada i Reixac", 
               "Barcelona - Sant Andreu", "Barcelona-El Clot-Aragó", "Barcelona-Passeig de Gràcia", 
-              "Barcelona-Sants", "Bellvitge", "El Prat de Llobregat", "Viladecans", "Gavà", "Castelldefels"],
+              "Barcelona-Sants", "Bellvitge | Gornal", "El Prat de Llobregat", "Viladecans", "Gavà", "Castelldefels"],
        "R2S": ["Barcelona - Estació de França", "Barcelona-Passeig de Gràcia", "Barcelona-Sants", 
-              "Bellvitge", "El Prat de Llobregat", "Viladecans", "Gavà", "Castelldefels", "Platja de Castelldefels", 
+              "Bellvitge | Gornal", "El Prat de Llobregat", "Viladecans", "Gavà", "Castelldefels", "Platja de Castelldefels", 
               "Garraf", "Sitges", "Vilanova i la Geltrú", "Cubelles", "Cunit", "Segur de Calafell", "Calafell", 
               "Sant Vicenç de Calders"],
        "R3": ["L'Hospitalet de Llobregat", "Barcelona-Sants", "Barcelona-Plaça Catalunya", "Barcelona-Arc de Triomf", 
@@ -358,7 +358,7 @@ stations_dict = {
               "Barcelona Sants","Barcelona Plaça de Catalunya","Barcelona Arc de Triomf","Barcelona La Sagrera-Meridiana",
               "Barcelona St.Andreu Arenal","Torre del Baró-Vallbona","Montcada Bifurcació","Montcada i Reixac-Manresa",
               "Montcada i Reixac-Sta. Maria","Cerdanyola del Vallès","Barberà del Vallès","Sabadell Sud","Sabadell Centre",
-              "Sabadell Nord","Terrassa Est" ,"Terrassa" ,"St. Miquel de Gonteres" ,"Viladecavalls" ,"Vacarisses-Torreblanca",
+              "Sabadell Nord","Terrassa Est" ,"Terrassa Estació del Nord" ,"St. Miquel de Gonteres" ,"Viladecavalls" ,"Vacarisses-Torreblanca",
               "Vacarisses" ,"Castellbell i el Vilar-Monistrol de Montserrat" ,"St. Vicenç de Castellet" ,"Manresa"],
        "R5": ['Plaça Espanya', 'Magòria-La Campana', 'Ildefons Cerdà', 'Europa | Fira', 'Gornal', 
               'Sant Josep', 'L’Hospitalet-Av. Carrilet', 'Almeda', 'Cornellà Riera', 'Sant Boi', 
@@ -377,7 +377,7 @@ stations_dict = {
               "Barcelona Sants","Barcelona Plaça de Catalunya","Barcelona Arc de Triomf","Barcelona La Sagrera-Meridiana",
               "Barcelona St.Andreu Arenal",'Torre del Baró-Vallbona','Montcada Bifurcació','Montcada i Reixac-Manresa',
               'Montcada i Reixac-Sta. Maria', 'Cerdanyola del Vallès','Cerdanyola Universitat'],
-       "R8": ['Martorell', 'Castellbisbal', 'Rubí', 'Sant Cugat del Vallès', 'Cerdanyola Universitat', 
+       "R8": ['Martorell Central', 'Castellbisbal', 'Rubi Can Vallhonrat', 'Sant Cugat Coll Favà', 'Cerdanyola Universitat', 
               'Santa Perpètua de Mogoda - Riera de caldes', 'Mollet - Sant Fost', 'Montmeló', 'Granollers Centre'],
        "S1": ['Barcelona - Pl. Catalunya', 'Provença', 'Gràcia', 'Sant Gervasi', 'Muntaner', 'La Bonanova', 
               'Les Tres Torres', 'Sarrià', 'Peu del Funicular', 'Baixador de Vallvidrera', 'Les Planes', 'La Floresta', 

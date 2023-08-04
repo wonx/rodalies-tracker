@@ -19,7 +19,7 @@ stations = {
     "R2": ["Maçanet-Massanes", "Hostalric", "Riells i Viabrea-Breda", "Gualba", "Sant Celoni", "Palautordera", "Llinars del Vallès", 
             "Cardedeu", "Les Franqueses del Vallès-Granollers Nord", "Granollers Centre", "Montmeló", "Mollet-Sant Fost", "La Llagosta", 
             "Montcada i Reixac", "Barcelona - Sant Andreu", "Barcelona-El Clot-Aragó", "Barcelona - Estació de França", 
-            "Barcelona-Passeig de Gràcia", "Barcelona-Sants", "Bellvitge", "El Prat de Llobregat", "Aeroport", "Viladecans", 
+            "Barcelona-Passeig de Gràcia", "Barcelona-Sants", "Bellvitge | Gornal", "El Prat de Llobregat", "Aeroport", "Viladecans", 
             "Gavà", "Castelldefels", "Platja de Castelldefels", "Garraf", "Sitges", "Vilanova i la Geltrú", "Cubelles", "Cunit", 
             "Segur de Calafell", "Calafell", "Sant Vicenç de Calders"],
 
@@ -35,7 +35,7 @@ stations = {
            "St. Joan Despí","Cornellà","L'Hospitalet de Llobregat","Barcelona Sants","Barcelona Plaça de Catalunya","Barcelona Arc de Triomf",
            "Barcelona La Sagrera-Meridiana","Barcelona St.Andreu Arenal","Barcelona Torre del Baró","Montcada Bifurcació",
            "Montcada i Reixac-Manresa", "Montcada i Reixac-Sta. Maria","Cerdanyola del Vallès","Barberà del Vallès","Sabadell Sud",
-           "Sabadell Centre","Sabadell Nord","Terrassa Est", "Terrassa" ,"St. Miquel de Gonteres", "Viladecavalls", "Vacarisses-Torreblanca",
+           "Sabadell Centre","Sabadell Nord","Terrassa Est", "Terrassa Estació del Nord" ,"St. Miquel de Gonteres", "Viladecavalls", "Vacarisses-Torreblanca",
            "Vacarisses" ,"Castellbell i el Vilar-Monistrol de Montserrat","St. Vicenç de Castellet" ,"Manresa"],
 
     "R5": ["Plaça Espanya", "Magòria-La Campana", "Ildefons Cerdà", "Europa | Fira", "Gornal", "Sant Josep", "L’Hospitalet-Av. Carrilet", 
@@ -53,7 +53,7 @@ stations = {
     "R7": ['Barcelona St. Andreu Arenal','Barcelona Torre del Baró','Montcada Bifurcació','Montcada i Reixac-Manresa',
            'Montcada i Reixac-Sta. Maria', 'Cerdanyola del Vallès','Cerdanyola Universitat'],
 
-    "R8": ['Martorell', 'Castellbisbal', 'Rubí', 'Sant Cugat del Vallès', 'Cerdanyola Universitat', 'Santa Perpètua de Mogoda - Riera de caldes', 
+    "R8": ['Martorell Central', 'Castellbisbal', 'Rubi Can Vallhonrat', 'Sant Cugat Coll Favà', 'Cerdanyola Universitat', 'Santa Perpètua de Mogoda - Riera de caldes', 
           'Mollet - Sant Fost', 'Montmeló', 'Granollers Centre'],
 
     "S1": ['Barcelona - Pl. Catalunya', 'Provença', 'Gràcia', 'Sant Gervasi', 'Muntaner', 'La Bonanova', 'Les Tres Torres', 'Sarrià', 'Peu del Funicular', 
