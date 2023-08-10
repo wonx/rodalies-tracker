@@ -280,7 +280,6 @@ def fix_stationnames(df, route):
                             "Barcelona-Torre Del Baró":"Torre del Baró-Vallbona",
                             "Sant Andreu Arenal":"Barcelona St.Andreu Arenal",
                             "Barcelona-Fabra I Puig":"Barcelona St.Andreu Arenal",
-                            "Sant Cugat":"Sant Cugat del Vallès",
                             "Montserrat-Aeri":"Aeri de Montserrat",
                             "Pl. Catalunya": "Barcelona - Pl. Catalunya",
                             "Martorell Vila":"Martorell Vila | Castellbisbal",
@@ -381,11 +380,11 @@ stations_dict = {
               'Santa Perpètua de Mogoda - Riera de caldes', 'Mollet - Sant Fost', 'Montmeló', 'Granollers Centre'],
        "S1": ['Barcelona - Pl. Catalunya', 'Provença', 'Gràcia', 'Sant Gervasi', 'Muntaner', 'La Bonanova', 
               'Les Tres Torres', 'Sarrià', 'Peu del Funicular', 'Baixador de Vallvidrera', 'Les Planes', 'La Floresta', 
-              'Valldoreix', 'Sant Cugat del Vallès', 'Mira-sol', 'Hospital General', 'Rubí', 'Les Fonts', 'Terrassa Rambla', 
+              'Valldoreix', 'Sant Cugat Centre', 'Mira-sol', 'Hospital General', 'Rubí Centre', 'Les Fonts', 'Terrassa Rambla', 
               'Vallparadís Universitat', 'Terrassa Estació del Nord', 'Terrassa Nacions Unides'],
        "S2": ['Barcelona - Pl. Catalunya', 'Provença', 'Gràcia', 'Sant Gervasi', 'Muntaner', 'La Bonanova', 
               'Les Tres Torres', 'Sarrià', 'Peu del Funicular', 'Baixador de Vallvidrera', 'Les Planes', 'La Floresta', 
-              'Valldoreix', 'Sant Cugat del Vallès', 'Volpelleres', 'Sant Joan', 'Bellaterra', 'Universitat Autònoma', 'Sant Quirze', 
+              'Valldoreix', 'Sant Cugat Centre', 'Volpelleres', 'Sant Joan', 'Bellaterra', 'Universitat Autònoma', 'Sant Quirze', 
               'Can Feu | Gràcia', 'Sabadell Plaça Major', 'La Creu Alta', 'Sabadell Nord', 'Sabadell Parc del Nord']
 }
 # Some keys are redundant, we can generate them dynamically:
