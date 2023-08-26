@@ -144,6 +144,10 @@ def busca_estacions_multiday(df, time, row, inverse=False):
         print("segons:", time_seconds)
         secondsdifference = time_at_stop - time_at_previous_stop
         print("seconds difference:",secondsdifference)
+        if secondsdifference == 0:
+            secondsdifference = 1
+            print("WARNING: THERE IS SOMETHING WRONG WITH THE SCHEDULE.")
+
         secondscurrent = time_seconds - time_at_previous_stop
         print("seconds current:", secondscurrent)
         routepercent = round(secondscurrent / secondsdifference, 3)
@@ -352,7 +356,7 @@ stations_dict = {
               "Sant Quirze de Besora", "La Farga de Bebié", "Ripoll", "Campdevànol", "Ribes de Freser", "Planoles", 
               "Toses", "La Molina", "Urtx-Alp", "Puigcerdà","Latour-de-Carol-Enveig"],
        "R4": ["St. Vicenç de Calders", "El Vendrell", "L'Arboç", "Els Monjos", "Vilafranca del Penedès", 
-              "La Granada", "Lavern-Subirats", "St. Sadurní d'Anoia", "Gelida", "Martorell", "Castellbisbal", 
+              "La Granada", "Lavern-Subirats", "St. Sadurní d'Anoia", "Gelida", "Martorell Central", "Castellbisbal", 
               "El Papiol","Molins de Rei","St. Feliu de Llobregat","St. Joan Despí","Cornellà","L'Hospitalet de Llobregat",
               "Barcelona Sants","Barcelona Plaça de Catalunya","Barcelona Arc de Triomf","Barcelona La Sagrera-Meridiana",
               "Barcelona St.Andreu Arenal","Torre del Baró-Vallbona","Montcada Bifurcació","Montcada i Reixac-Manresa",

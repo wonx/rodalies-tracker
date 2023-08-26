@@ -157,6 +157,7 @@ print("...all done.")
 
 #tz = pytz.timezone('US/Eastern') # zona horària de NYC, for testing purposes 
 tz = pytz.timezone('Europe/Madrid') # zona horària de Madrid 
+
 #bcn_time = datetime.now(tz).strftime("%H:%M:%S") # hora de Barcelona en format hh:mm
 #print(bcn_time)
 #print(helpers.find_alltrains(r3_anada, bcn_time))
