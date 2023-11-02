@@ -29,7 +29,8 @@ def refresh_datasets():
 
 refresh_datasets()
 
-routes = ['R1', 'R3', 'R4', 'R5', 'R50', 'R6', 'R60', 'R7', 'R8', 'S1', 'S2', 'S3', 'S4', 'S8', 'S9']
+routes = ['R1', 'R4', 'R5', 'R50', 'R6', 'R60', 'R7', 'R8', 'S1', 'S2', 'S3', 'S4', 'S8', 'S9']
+#routes = ['R3']
 
 def refresh_schedules():
     today = datetime.today().strftime('%Y%m%d')
