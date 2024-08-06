@@ -25,12 +25,15 @@ def refresh_datasets():
     print("Getting train schedules from GTFS data...")
     data_cer = gtfsdata.update_dataset("cercanias")
     data_fgc = gtfsdata.update_dataset("fgc")
+    print("data_cer type:", type(data_cer)) # If it's not a dict, bad news
+    print("data_fgc type:", type(data_fgc))
     return data_cer, data_fgc
 
 refresh_datasets()
 
-routes = ['R1', 'R4', 'R5', 'R50', 'R6', 'R60', 'R7', 'R8', 'S1', 'S2', 'S3', 'S4', 'S8', 'S9']
-#routes = ['R3']
+
+routes = ['R1', 'R3', 'R4', 'R5', 'R50', 'R6', 'R60', 'R7', 'R8', 'S1', 'S2', 'S3', 'S4', 'S8', 'S9'] # We are omitting R2 on purpose
+#routes = ['R1', 'R3', 'R4']
 
 def refresh_schedules():
     today = datetime.today().strftime('%Y%m%d')
@@ -41,9 +44,15 @@ def refresh_schedules():
     for route in routes:
         print("Processing route", route)
         if route[:1] == 'S' or route[:2] in ("R5", "R6"):
-            df_anada, df_tornada = gtfsdata.get_schedule_fgc(data_fgc, route, today)
+            if "trips.txt" in data_fgc: # Just making sure the data file is valid
+                df_anada, df_tornada = gtfsdata.get_schedule_fgc(data_fgc, route, today)
+            else:
+                continue
         else:
-            df_anada, df_tornada = gtfsdata.get_schedule_cercanias(data_cer, route, today)
+            if "trips.txt" in data_cer: # Just making sure the data file is valid
+                df_anada, df_tornada = gtfsdata.get_schedule_cercanias(data_cer, route, today)
+            else:
+                continue
         # Standardize the amount of station and their names
         df_anada = helpers.fix_stationnames(df_anada, route)
         df_tornada = helpers.fix_stationnames(df_tornada, route)
@@ -82,6 +91,11 @@ def prepare_r2():
     routes = ['R2N', 'R2', 'R2S']
     for route in routes:
         df_anada, df_tornada = gtfsdata.get_schedule_cercanias(data_cer, route, today)
+        print(df_anada)
+        print(df_tornada)
+        if type(df_anada) == int: # Means that the dataframes are malformed
+            print(f"The dataframe for route {route} is invalid.")
+            return None
         # Standardize the amount of station and their names
         df_anada = helpers.fix_stationnames(df_anada, 'R2')
         df_tornada = helpers.fix_stationnames(df_tornada, 'R2')
@@ -129,9 +143,14 @@ def prepare_r2():
 # For the allroutes.html, combine several lines: (R5, R50, S3, S4, S8, S9) & (R6, R60)
 def prepare_r5r50r6r60():
     global schedules_dict
+    print(schedules_dict.keys)
     print("Merging R5, R50, S3, S4, S8 & S9")
     routes = ['R50', 'S3', 'S4', 'S8', 'S9']
-    schedules_dict['R5 R50 S3 S4 S8 S9'] = schedules_dict['R5'].copy()
+    try:
+        schedules_dict['R5 R50 S3 S4 S8 S9'] = schedules_dict['R5'].copy()
+    except: 
+        print("Route R5 not available")
+        return
     for route in routes:
         for direction in ['Anada', 'Tornada']:
             schedules_dict['R5 R50 S3 S4 S8 S9'][direction] = pd.concat([schedules_dict['R5 R50 S3 S4 S8 S9'][direction], schedules_dict[route][direction]])

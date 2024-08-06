@@ -17,6 +17,10 @@ def download_and_load_data(url, network, csv_files):
     today = datetime.today().strftime('%Y%m%d')
     path = 'static/google_transit-schedule/' + network + '/'
     response = requests.get(url)
+    print(str(response.status_code))
+    if (response.status_code != 200):
+        print("Error: GTFS file could not be downloaded from", url)
+        return 
 
     with open(path+today + "-" + url.split("/")[-1], 'wb') as f:
         f.write(response.content)
@@ -39,7 +43,10 @@ def update_dataset(network):
 
         data = download_and_load_data(url, network, csv_files)
 
-        return data
+        if "trips.txt" in data: #If that key is not in the data, it means that the file could not be processed correctly
+            return data
+        else:
+            return -1
 
     except Exception as e:
         print("Error:", e)
@@ -222,7 +229,7 @@ def group_schedules(df):
 
     groups = group_tuple_values(groups) # Merges groups with common elements
 
-    #print(groups)
+    print(groups)
 
     for key, group in groups.items():
         #print("group", group)
@@ -346,7 +353,7 @@ def get_schedule_cercanias(dataset, route, date):
             stops = df_trip['stop_id'].values
             trip.columns = stops  # set the column names to the stops
             trip_list_df.append(trip)
-            #display(trip)
+    
 
         # Groups the trips in trip_list_df into dataframes
         for element in group_schedules(trip_list_df):
@@ -355,7 +362,8 @@ def get_schedule_cercanias(dataset, route, date):
         # Set the columns in order
         # (this is already being done inside the group_schedules())
 
-    #print("Elements in schedule_list:", len(schedule_list))
+    print("Elements in schedule_list:", len(schedule_list))
+    #display(schedule_list)
 
     # If that resulted in more than 2 schedules (we want one for each direction of the route), group them again:
     if len(schedule_list) > 2: schedule_list = group_schedules(schedule_list)
@@ -365,6 +373,11 @@ def get_schedule_cercanias(dataset, route, date):
 
     # Finally, sort the schedules
     schedule_list = [sort_schedule(schedule) if not schedule.empty else schedule for schedule in schedule_list]
+
+    print("length of the returned list (should be 2):")
+    print(len(schedule_list))
+    if len(schedule_list) != 2:
+        return (-1, -1)
 
     return schedule_list
 
